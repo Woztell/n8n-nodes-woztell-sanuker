@@ -3,13 +3,13 @@ import { NodeConnectionType } from 'n8n-workflow';
 import { botAPINodeFields, botAPIOperations } from './BotAPIDescription';
 import { WOZTELL_BASE_URL } from './GenericFunctions';
 
-const WOZTELL_CREDENTIALS_TYPE = 'woztellCredentialsApi';
+const WOZTELL_CREDENTIALS_TYPE = 'woztellCredential';
 
 export class Woztell implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Woztell',
 		name: 'woztell',
-		// icon: 'file:whatsapp.svg',
+		// icon: 'file:woztell.svg',
 		group: ['output'],
 		version: 1,
 		subtitle: '={{ $parameter["resource"] + ": " + $parameter["operation"] }}',
@@ -20,7 +20,6 @@ export class Woztell implements INodeType {
 		usableAsTool: true,
 		inputs: [NodeConnectionType.Main],
 		outputs: [NodeConnectionType.Main],
-		// webhooks: sendAndWaitWebhooksDescription,
 		credentials: [
 			{
 				name: WOZTELL_CREDENTIALS_TYPE,
@@ -48,9 +47,12 @@ export class Woztell implements INodeType {
 					},
 				],
 				default: 'botAPI',
-				displayOptions: {
+				disabledOptions: {
 					hideOnCloud: true,
 				},
+				// displayOptions: {
+				// 	hideOnCloud: true,
+				// },
 			},
 			...botAPIOperations,
 			...botAPINodeFields,

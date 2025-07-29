@@ -1,4 +1,5 @@
 import {
+	IDataObject,
 	type IHookFunctions,
 	type INodeType,
 	type INodeTypeDescription,
@@ -6,6 +7,7 @@ import {
 	type IWebhookResponseData,
 	NodeConnectionType,
 } from 'n8n-workflow';
+import { v4 as uuidv4 } from 'uuid';
 
 export class WoztellTrigger implements INodeType {
 	description: INodeTypeDescription = {
@@ -33,13 +35,23 @@ export class WoztellTrigger implements INodeType {
 				httpMethod: 'POST',
 				responseMode: 'lastNode',
 				responseData: 'allEntries',
-				path: 'webhook',
+				path: '={{$parameter["path"]}}',
+				isFullPath: true,
 			},
 		],
 		properties: [
 			{
-				displayName: 'Additional Fields',
-				name: 'additionalFields',
+				displayName: 'Path',
+				name: 'path',
+				type: 'string',
+				default: uuidv4(),
+				required: true,
+				placeholder: 'webhook',
+				description: 'The path for the webhook URL',
+			},
+			{
+				displayName: 'Filter Fields',
+				name: 'filterFields',
 				type: 'collection',
 				placeholder: 'Add Field',
 				default: {},
@@ -55,8 +67,8 @@ export class WoztellTrigger implements INodeType {
 						},
 					},
 					{
-						displayName: 'Recipient ID',
-						name: 'recipientId',
+						displayName: 'Event Type',
+						name: 'eventType',
 						type: 'string',
 						default: '',
 						description: '',
@@ -85,12 +97,25 @@ export class WoztellTrigger implements INodeType {
 
 	async webhook(this: IWebhookFunctions): Promise<IWebhookResponseData> {
 		const bodyData = this.getBodyData();
-		if (!bodyData) {
-			const channelId = this.getNodeParameter('channelId', '') as string;
-			const recipientId = this.getNodeParameter('recipientId', '') as string;
+		const filterFields = this.getNodeParameter('filterFields') as IDataObject;
+		const { channelId, eventType } = filterFields;
+
+		if (!channelId && !eventType) {
 			return {
-				workflowData: [this.helpers.returnJsonArray({ channelId, recipientId })],
+				workflowData: [this.helpers.returnJsonArray(bodyData)],
 			};
+		}
+
+		// filter
+		if (channelId && channelId !== bodyData?.channelId) {
+			const res = this.getResponseObject();
+			res.status(400).json({ message: 'ChannelId is not valid' });
+			throw new Error('ChannelId is not valid');
+		}
+		if (eventType && eventType !== bodyData?.eventType) {
+			const res = this.getResponseObject();
+			res.status(400).json({ message: 'EventType is not valid' });
+			throw new Error('EventType is not valid');
 		}
 
 		return {

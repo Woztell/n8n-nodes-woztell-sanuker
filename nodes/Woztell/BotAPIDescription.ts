@@ -34,19 +34,12 @@ export const botAPIOperations: INodeProperties[] = [
 			},
 		],
 		default: 'sendResponses',
-		// routing: {
-		// 	request: {
-		// 		ignoreHttpStatusErrors: true,
-		// 	},
-		// 	send: {
-		// 		// preSend: [setType],
-		// 	},
-		// 	output: { postReceive: [] },
-		// },
 		displayOptions: {
 			show: {
 				resource: ['botAPI'],
 			},
+		},
+		disabledOptions: {
 			hideOnCloud: true,
 		},
 	},
@@ -87,7 +80,7 @@ export const botAPIOperations: INodeProperties[] = [
 		default: '',
 		placeholder: '',
 		required: true,
-		description: 'Channel ID in WOZTELL',
+		description: 'Channel in WOZTELL',
 		routing: {
 			send: {
 				type: 'body',
