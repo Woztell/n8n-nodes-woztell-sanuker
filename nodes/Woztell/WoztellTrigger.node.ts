@@ -13,7 +13,7 @@ export class WoztellTrigger implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Woztell Trigger',
 		name: 'woztellTrigger',
-		// icon: 'file:woztell.svg',
+		icon: 'file:woztell.svg',
 		group: ['trigger'],
 		version: 1,
 		subtitle: '={{$parameter["event"]}}',

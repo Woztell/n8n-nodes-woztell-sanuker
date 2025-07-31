@@ -1,48 +1,40 @@
 # n8n-nodes-woztell
 
-This is an n8n community node. It lets you use _app/service name_ in your n8n workflows.
-
-_App/service name_ is _one or two sentences describing the service this node integrates with_.
-
-[n8n](https://n8n.io/) is a [fair-code licensed](https://docs.n8n.io/reference/license/) workflow automation platform.
+For easier [Woztell](https://woztell.com/) integration within your n8n workflows.
 
 [Installation](#installation)  
 [Operations](#operations)  
-[Credentials](#credentials)  <!-- delete if no auth needed -->  
-[Compatibility](#compatibility)  
-[Usage](#usage)  <!-- delete if not using this section -->  
+[Credentials](#credentials)  
 [Resources](#resources)  
-[Version history](#version-history)  <!-- delete if not using this section -->  
 
 ## Installation
 
-Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes/installation/) in the n8n community nodes documentation.
+Install [the community node package in your n8n instance](https://docs.n8n.io/integrations/community-nodes/installation/gui-install/):
+
+```
+@woztell/n8n-nodes-woztell
+```
 
 ## Operations
 
-_List the operations supported by your node._
+You can use the Trigger node to listen for webhook requests.  
+The Send Response node allows you to send messages to specific users.  
+If you've configured a chatbot in Woztell, the Redirect Member to Node can direct users to a chatbot node.  
+
+![sendResponse](screenshots/sendResponse.png)
+![redirectMemberToNode](screenshots/redirectMemberToNode.png)
 
 ## Credentials
 
-_If users need to authenticate with the app/service, provide details here. You should include prerequisites (such as signing up with the service), available authentication methods, and how to set them up._
+1. Open the [link](https://platform.woztell.com/settings/accesstokens?lang=en) and enable the `channel:list`, `botapi:sendResponses`, and `bot:redirectMemberToNode` permissions.
+2. Generate the access token.
 
-## Compatibility
+For more details, please refer to this [link](https://doc.woztell.com/docs/documentations/settings/access-token).
 
-_State the minimum n8n version, as well as which versions you test against. You can also include any known version incompatibility issues._
-
-## Usage
-
-_This is an optional section. Use it to help users with any difficult or confusing aspects of the node._
-
-_By the time users are looking for community nodes, they probably already know n8n basics. But if you expect new users, you can link to the [Try it out](https://docs.n8n.io/try-it-out/) documentation to help them get started._
+![alt text](screenshots/accessToken.png)
+![alt text](screenshots/credential.png)
 
 ## Resources
 
-* [n8n community nodes documentation](https://docs.n8n.io/integrations/#community-nodes)
-* _Link to app/service documentation._
-
-## Version history
-
-_This is another optional section. If your node has multiple versions, include a short description of available versions and what changed, as well as any compatibility impact._
-
-
+- [n8n community nodes documentation](https://docs.n8n.io/integrations/#community-nodes)
+- _Link to app/service documentation._

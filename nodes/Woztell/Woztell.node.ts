@@ -9,7 +9,7 @@ export class Woztell implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Woztell',
 		name: 'woztell',
-		// icon: 'file:woztell.svg',
+		icon: 'file:woztell.svg',
 		group: ['output'],
 		version: 1,
 		subtitle: '={{ $parameter["resource"] + ": " + $parameter["operation"] }}',
