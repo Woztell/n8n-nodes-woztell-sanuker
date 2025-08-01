@@ -32,6 +32,17 @@ export const botAPIOperations: INodeProperties[] = [
 					},
 				},
 			},
+			// {
+			// 	name: 'Send Templates',
+			// 	value: 'sendTemplates',
+			// 	action: 'Send templates',
+			// 	routing: {
+			// 		request: {
+			// 			baseURL: WOZTELL_BOT_BASE_URL,
+			// 			url: '/sendResponses',
+			// 		},
+			// 	},
+			// },
 		],
 		default: 'sendResponses',
 		displayOptions: {
@@ -115,15 +126,55 @@ export const botAPIOperations: INodeProperties[] = [
 			},
 		},
 	},
+	// {
+	// 	displayName: 'Response',
+	// 	name: 'response',
+	// 	type: 'json',
+	// 	required: true,
+	// 	default: '',
+	// 	description:
+	// 		'The data you wish to send as a response. You can construct the response object by referencing from integration documentations or copy from Bot builder.',
+	// 	displayOptions: {
+	// 		show: {
+	// 			resource: ['botAPI'],
+	// 			operation: ['sendResponses'],
+	// 		},
+	// 	},
+	// 	routing: {
+	// 		send: {
+	// 			type: 'body',
+	// 			preSend: [getResponse],
+	// 		},
+	// 	},
+	// },
 	{
-		displayName: 'Response',
-		name: 'response',
-		type: 'json',
-		placeholder: '',
-		required: true,
+		displayName: 'Responses',
+		name: 'responses',
+		type: 'fixedCollection',
+		placeholder: 'Add Response',
 		default: '',
-		description:
-			'The data you wish to send as a response. You can construct the response object by referencing from integration documentations or copy from Bot builder.',
+		typeOptions: {
+			multipleValues: true,
+			maxAllowedFields: 3,
+			minValue: 1,
+		},
+		options: [
+			{
+				displayName: 'Response',
+				name: 'response',
+				description:
+					'The data you wish to send as a response. You can construct the response object by referencing from integration documentations or copy from Bot builder.',
+				values: [
+					{
+						displayName: '',
+						name: 'detail',
+						type: 'json',
+						description: '',
+						default: '{}',
+					},
+				],
+			},
+		],
 		displayOptions: {
 			show: {
 				resource: ['botAPI'],
@@ -159,6 +210,7 @@ export const redirectNodeFields: INodeProperties[] = [
 		},
 		displayOptions: {
 			show: {
+				resource: ['botAPI'],
 				operation: ['redirectMemberToNode'],
 			},
 		},
@@ -178,6 +230,7 @@ export const redirectNodeFields: INodeProperties[] = [
 		},
 		displayOptions: {
 			show: {
+				resource: ['botAPI'],
 				operation: ['redirectMemberToNode'],
 			},
 		},
@@ -187,7 +240,7 @@ export const redirectNodeFields: INodeProperties[] = [
 		name: 'redirectRunPreAction',
 		type: 'boolean',
 		default: true,
-		description: 'Redirect send response; can be set as true or false',
+		description: 'Run Pre-actions after redirect; can be set as true or false',
 		routing: {
 			send: {
 				type: 'body',
@@ -196,6 +249,7 @@ export const redirectNodeFields: INodeProperties[] = [
 		},
 		displayOptions: {
 			show: {
+				resource: ['botAPI'],
 				operation: ['redirectMemberToNode'],
 			},
 		},
@@ -205,7 +259,7 @@ export const redirectNodeFields: INodeProperties[] = [
 		name: 'redirectSendResponse',
 		type: 'boolean',
 		default: true,
-		description: 'Redirect send response; can be set as true or false',
+		description: 'Send Response after redirect; can be set as true or false',
 		routing: {
 			send: {
 				type: 'body',
@@ -214,6 +268,7 @@ export const redirectNodeFields: INodeProperties[] = [
 		},
 		displayOptions: {
 			show: {
+				resource: ['botAPI'],
 				operation: ['redirectMemberToNode'],
 			},
 		},
@@ -223,7 +278,7 @@ export const redirectNodeFields: INodeProperties[] = [
 		name: 'redirectRunPostAction',
 		type: 'boolean',
 		default: true,
-		description: 'Redirect execute post-action; can be set as true or false',
+		description: 'Run Post-actions after redirect; can be set as true or false',
 		routing: {
 			send: {
 				type: 'body',
@@ -232,6 +287,7 @@ export const redirectNodeFields: INodeProperties[] = [
 		},
 		displayOptions: {
 			show: {
+				resource: ['botAPI'],
 				operation: ['redirectMemberToNode'],
 			},
 		},
@@ -271,18 +327,12 @@ export const metaNodeFields: INodeProperties[] = [
 						description: 'Value to set for the metadata key.',
 					},
 				],
-				// routing: {
-				// 	send: {
-				// 		type: 'body',
-				// 		property: '={{meta.$name}}',
-				// 		value: '={{meta.$value}}',
-				// 	},
-				// },
 			},
 		],
 		displayOptions: {
 			// the resources and operations to display this element with
 			show: {
+				resource: ['botAPI'],
 				operation: [
 					// comma-separated list of operation names
 					'redirectMemberToNode',
@@ -292,9 +342,7 @@ export const metaNodeFields: INodeProperties[] = [
 		routing: {
 			send: {
 				type: 'body',
-				// property: 'meta',
 				preSend: [getMatedata],
-				// value: '={{$parameter.metadataValues.value}}',
 			},
 		},
 	},
