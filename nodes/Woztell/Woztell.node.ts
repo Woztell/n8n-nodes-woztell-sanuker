@@ -1,9 +1,17 @@
 import type { INodeType, INodeTypeDescription } from 'n8n-workflow';
 import { NodeConnectionType } from 'n8n-workflow';
 import { botAPINodeFields, botAPIOperations } from './BotAPIDescription';
-import { WOZTELL_BASE_URL } from './GenericFunctions';
-
-const WOZTELL_CREDENTIALS_TYPE = 'woztellCredential';
+import {
+	getLanguages,
+	getMappingButtons,
+	getMappingHeaders,
+	getMappingVariables,
+	getWABAInfo,
+	searchChannels,
+	searchTemplates,
+	WOZTELL_BASE_URL,
+	WOZTELL_CREDENTIALS_TYPE,
+} from './GenericFunctions';
 
 export class Woztell implements INodeType {
 	description: INodeTypeDescription = {
@@ -50,12 +58,25 @@ export class Woztell implements INodeType {
 				disabledOptions: {
 					hideOnCloud: true,
 				},
-				// displayOptions: {
-				// 	hideOnCloud: true,
-				// },
 			},
 			...botAPIOperations,
 			...botAPINodeFields,
 		],
+	};
+
+	methods = {
+		loadOptions: {
+			getLanguages,
+			getWABAInfo,
+		},
+		resourceMapping: {
+			getMappingVariables,
+			getMappingHeaders,
+			getMappingButtons,
+		},
+		listSearch: {
+			searchChannels,
+			searchTemplates,
+		},
 	};
 }

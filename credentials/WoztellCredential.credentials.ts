@@ -22,7 +22,18 @@ export class WoztellCredential implements ICredentialType {
 			typeOptions: {
 				password: true,
 			},
+			required: true,
 			hint: 'Please enable channel list permission.',
+			default: '',
+		},
+		{
+			displayName: 'Public API Access Token',
+			name: 'publicApiAccessToken',
+			type: 'string',
+			typeOptions: {
+				password: true,
+			},
+			hint: '',
 			default: '',
 		},
 	];
