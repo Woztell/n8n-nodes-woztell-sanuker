@@ -4,7 +4,8 @@
 	"description": "n8n-nodes-woztell-sanuker",
 	"keywords": [
 		"n8n-community-node-package",
-		"woztell"
+		"woztell",
+		"sanuker"
 	],
 	"license": "MIT",
 	"homepage": "",
