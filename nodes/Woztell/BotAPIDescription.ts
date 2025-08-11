@@ -1,12 +1,6 @@
 import { type INodeProperties } from 'n8n-workflow';
 
-import {
-	getMatedata,
-	getResponses,
-	setParamsComponents,
-	setParamsContent,
-	WOZTELL_BOT_BASE_URL,
-} from './GenericFunctions';
+import { getMatedata, getResponses, WOZTELL_BOT_BASE_URL } from './GenericFunctions';
 
 export const botAPIOperations: INodeProperties[] = [
 	{
@@ -38,17 +32,17 @@ export const botAPIOperations: INodeProperties[] = [
 					},
 				},
 			},
-			{
-				name: 'Send Templates',
-				value: 'sendTemplates',
-				action: 'Send templates',
-				routing: {
-					request: {
-						baseURL: WOZTELL_BOT_BASE_URL,
-						url: '/sendResponses',
-					},
-				},
-			},
+			// {
+			// 	name: 'Send Templates',
+			// 	value: 'sendTemplates',
+			// 	action: 'Send templates',
+			// 	routing: {
+			// 		request: {
+			// 			baseURL: WOZTELL_BOT_BASE_URL,
+			// 			url: '/sendResponses',
+			// 		},
+			// 	},
+			// },
 		],
 		default: 'sendResponses',
 		displayOptions: {
@@ -125,7 +119,7 @@ export const botAPIOperations: INodeProperties[] = [
 		name: 'responses',
 		type: 'fixedCollection',
 		placeholder: 'Add Response',
-		default: '',
+		default: {},
 		description:
 			'The data you wish to send as a response. You can construct the response object by referencing from integration documentations or copy from Bot builder.',
 		typeOptions: {
@@ -141,7 +135,6 @@ export const botAPIOperations: INodeProperties[] = [
 						displayName: 'Response(JSON)',
 						name: 'detail',
 						type: 'json',
-						description: '',
 						required: true,
 						default: '{}',
 					},
@@ -173,7 +166,7 @@ export const redirectNodeFields: INodeProperties[] = [
 		name: 'tree',
 		type: 'string',
 		required: true,
-		description: 'Target tree you wish to redirect to.',
+		description: 'Target tree you wish to redirect to',
 		default: '',
 		routing: {
 			send: {
@@ -194,7 +187,7 @@ export const redirectNodeFields: INodeProperties[] = [
 		type: 'string',
 		required: true,
 		default: '',
-		description: 'Target node you wish to redirect to.',
+		description: 'Target node you wish to redirect to',
 		routing: {
 			send: {
 				type: 'body',
@@ -213,7 +206,7 @@ export const redirectNodeFields: INodeProperties[] = [
 		name: 'redirectRunPreAction',
 		type: 'boolean',
 		default: true,
-		description: 'Run Pre-actions after redirect; can be set as true or false',
+		description: 'Whether to run Pre-actions after redirect; can be set as true or false',
 		routing: {
 			send: {
 				type: 'body',
@@ -232,7 +225,7 @@ export const redirectNodeFields: INodeProperties[] = [
 		name: 'redirectSendResponse',
 		type: 'boolean',
 		default: true,
-		description: 'Send Response after redirect; can be set as true or false',
+		description: 'Whether to send Response after redirect; can be set as true or false',
 		routing: {
 			send: {
 				type: 'body',
@@ -251,7 +244,7 @@ export const redirectNodeFields: INodeProperties[] = [
 		name: 'redirectRunPostAction',
 		type: 'boolean',
 		default: true,
-		description: 'Run Post-actions after redirect; can be set as true or false',
+		description: 'Whether to run post-actions after redirect; can be set as true or false',
 		routing: {
 			send: {
 				type: 'body',
@@ -273,7 +266,7 @@ export const metaNodeFields: INodeProperties[] = [
 		name: 'metadata',
 		placeholder: 'Add Metadata',
 		type: 'fixedCollection',
-		default: '',
+		default: {},
 		typeOptions: {
 			multipleValues: true,
 		},
@@ -289,7 +282,7 @@ export const metaNodeFields: INodeProperties[] = [
 						displayName: 'Name',
 						name: 'name',
 						type: 'string',
-						description: 'Name of the metadata key to add.',
+						description: 'Name of the metadata key to add',
 						default: '',
 					},
 					{
@@ -297,7 +290,7 @@ export const metaNodeFields: INodeProperties[] = [
 						name: 'value',
 						type: 'string',
 						default: '',
-						description: 'Value to set for the metadata key.',
+						description: 'Value to set for the metadata key',
 					},
 				],
 			},
@@ -321,220 +314,220 @@ export const metaNodeFields: INodeProperties[] = [
 	},
 ];
 
-export const templateFields: INodeProperties[] = [
-	{
-		displayName: 'WABA ID',
-		name: 'wabaId',
-		type: 'options',
-		default: '',
-		required: true,
-		description: '',
-		typeOptions: {
-			loadOptionsMethod: 'getWABAInfo',
-			loadOptionsDependsOn: ['channel.value'],
-		},
-		displayOptions: {
-			show: {
-				resource: ['botAPI'],
-				operation: ['sendTemplates'],
-			},
-		},
-	},
-	{
-		displayName: 'Template',
-		name: 'template',
-		type: 'resourceLocator',
-		default: { mode: 'list', value: [] },
-		description: 'Message Template',
-		required: true,
-		modes: [
-			{
-				displayName: 'List',
-				name: 'list',
-				type: 'list',
-				typeOptions: {
-					searchListMethod: 'searchTemplates',
-					searchable: true,
-					searchFilterRequired: false,
-				},
-			},
-		],
-		displayOptions: {
-			show: {
-				resource: ['botAPI'],
-				operation: ['sendTemplates'],
-				channel: [
-					{
-						_cnd: {
-							exists: true,
-						},
-					},
-				],
-				wabaId: [
-					{
-						_cnd: {
-							exists: true,
-						},
-					},
-				],
-			},
-		},
-		routing: {
-			send: {
-				type: 'body',
-				preSend: [setParamsContent],
-			},
-		},
-	},
-	{
-		displayName: 'Language',
-		name: 'language',
-		type: 'options',
-		description: '',
-		typeOptions: {
-			loadOptionsMethod: 'getLanguages',
-			loadOptionsDependsOn: ['template.value'],
-		},
-		default: [],
-		required: true,
-		displayOptions: {
-			show: {
-				resource: ['botAPI'],
-				operation: ['sendTemplates'],
-				template: [
-					{
-						_cnd: {
-							exists: true,
-						},
-					},
-				],
-			},
-		},
-		routing: {
-			send: {
-				type: 'body',
-				property: 'response[0].languageCode',
-			},
-		},
-	},
-	{
-		displayName: 'Headers',
-		name: 'headers', // The name used to reference the element UI within the code
-		type: 'resourceMapper', // The UI element type
-		default: {
-			mappingMode: 'defineBelow',
-			value: null,
-		},
-		required: true,
-		// See "Resource mapper type options interface" below for the full typeOptions specification
-		typeOptions: {
-			loadOptionsDependsOn: ['template.value', 'language'],
-			resourceMapper: {
-				resourceMapperMethod: 'getMappingHeaders',
-				mode: 'add',
-				fieldWords: {
-					singular: 'header',
-					plural: 'headers',
-				},
-				addAllFields: true,
-				multiKeyMatch: false,
-				supportAutoMap: false,
-				valuesLabel: 'Header',
-			},
-		},
-		displayOptions: {
-			show: {
-				resource: ['botAPI'],
-				operation: ['sendTemplates'],
-			},
-		},
-		routing: {
-			send: {
-				type: 'body',
-				preSend: [setParamsComponents],
-			},
-		},
-	},
-	{
-		displayName: 'Variables',
-		name: 'variables', // The name used to reference the element UI within the code
-		type: 'resourceMapper', // The UI element type
-		default: {
-			mappingMode: 'defineBelow',
-			value: null,
-		},
-		required: true,
-		// See "Resource mapper type options interface" below for the full typeOptions specification
-		typeOptions: {
-			loadOptionsDependsOn: ['template.value', 'language'],
-			resourceMapper: {
-				resourceMapperMethod: 'getMappingVariables',
-				mode: 'add',
-				fieldWords: {
-					singular: 'variable',
-					plural: 'variables',
-				},
-				addAllFields: true,
-				multiKeyMatch: false,
-				supportAutoMap: false,
-				valuesLabel: 'Body',
-			},
-		},
-		displayOptions: {
-			show: {
-				resource: ['botAPI'],
-				operation: ['sendTemplates'],
-			},
-		},
-		routing: {
-			send: {
-				type: 'body',
-				preSend: [setParamsComponents],
-			},
-		},
-	},
-	{
-		displayName: 'Buttons',
-		name: 'buttons', // The name used to reference the element UI within the code
-		type: 'resourceMapper', // The UI element type
-		default: {
-			mappingMode: 'defineBelow',
-			value: null,
-		},
-		required: true,
-		// See "Resource mapper type options interface" below for the full typeOptions specification
-		typeOptions: {
-			loadOptionsDependsOn: ['template.value', 'language'],
-			resourceMapper: {
-				resourceMapperMethod: 'getMappingButtons',
-				mode: 'add',
-				fieldWords: {
-					singular: 'button',
-					plural: 'buttons',
-				},
-				addAllFields: true,
-				multiKeyMatch: false,
-				supportAutoMap: false,
-				valuesLabel: 'Buttons',
-			},
-		},
-		displayOptions: {
-			show: {
-				resource: ['botAPI'],
-				operation: ['sendTemplates'],
-			},
-		},
-		routing: {
-			send: {
-				type: 'body',
-				preSend: [setParamsComponents],
-			},
-		},
-	},
-];
+// export const templateFields: INodeProperties[] = [
+// 	{
+// 		displayName: 'WABA ID',
+// 		name: 'wabaId',
+// 		type: 'options',
+// 		default: '',
+// 		required: true,
+// 		description: '',
+// 		typeOptions: {
+// 			loadOptionsMethod: 'getWABAInfo',
+// 			loadOptionsDependsOn: ['channel.value'],
+// 		},
+// 		displayOptions: {
+// 			show: {
+// 				resource: ['botAPI'],
+// 				operation: ['sendTemplates'],
+// 			},
+// 		},
+// 	},
+// 	{
+// 		displayName: 'Template',
+// 		name: 'template',
+// 		type: 'resourceLocator',
+// 		default: { mode: 'list', value: [] },
+// 		description: 'Message Template',
+// 		required: true,
+// 		modes: [
+// 			{
+// 				displayName: 'List',
+// 				name: 'list',
+// 				type: 'list',
+// 				typeOptions: {
+// 					searchListMethod: 'searchTemplates',
+// 					searchable: true,
+// 					searchFilterRequired: false,
+// 				},
+// 			},
+// 		],
+// 		displayOptions: {
+// 			show: {
+// 				resource: ['botAPI'],
+// 				operation: ['sendTemplates'],
+// 				channel: [
+// 					{
+// 						_cnd: {
+// 							exists: true,
+// 						},
+// 					},
+// 				],
+// 				wabaId: [
+// 					{
+// 						_cnd: {
+// 							exists: true,
+// 						},
+// 					},
+// 				],
+// 			},
+// 		},
+// 		routing: {
+// 			send: {
+// 				type: 'body',
+// 				preSend: [setParamsContent],
+// 			},
+// 		},
+// 	},
+// 	{
+// 		displayName: 'Language',
+// 		name: 'language',
+// 		type: 'options',
+// 		description: '',
+// 		typeOptions: {
+// 			loadOptionsMethod: 'getLanguages',
+// 			loadOptionsDependsOn: ['template.value'],
+// 		},
+// 		default: [],
+// 		required: true,
+// 		displayOptions: {
+// 			show: {
+// 				resource: ['botAPI'],
+// 				operation: ['sendTemplates'],
+// 				template: [
+// 					{
+// 						_cnd: {
+// 							exists: true,
+// 						},
+// 					},
+// 				],
+// 			},
+// 		},
+// 		routing: {
+// 			send: {
+// 				type: 'body',
+// 				property: 'response[0].languageCode',
+// 			},
+// 		},
+// 	},
+// 	{
+// 		displayName: 'Headers',
+// 		name: 'headers', // The name used to reference the element UI within the code
+// 		type: 'resourceMapper', // The UI element type
+// 		default: {
+// 			mappingMode: 'defineBelow',
+// 			value: null,
+// 		},
+// 		required: true,
+// 		// See "Resource mapper type options interface" below for the full typeOptions specification
+// 		typeOptions: {
+// 			loadOptionsDependsOn: ['template.value', 'language'],
+// 			resourceMapper: {
+// 				resourceMapperMethod: 'getMappingHeaders',
+// 				mode: 'add',
+// 				fieldWords: {
+// 					singular: 'header',
+// 					plural: 'headers',
+// 				},
+// 				addAllFields: true,
+// 				multiKeyMatch: false,
+// 				supportAutoMap: false,
+// 				valuesLabel: 'Header',
+// 			},
+// 		},
+// 		displayOptions: {
+// 			show: {
+// 				resource: ['botAPI'],
+// 				operation: ['sendTemplates'],
+// 			},
+// 		},
+// 		routing: {
+// 			send: {
+// 				type: 'body',
+// 				preSend: [setParamsComponents],
+// 			},
+// 		},
+// 	},
+// 	{
+// 		displayName: 'Variables',
+// 		name: 'variables', // The name used to reference the element UI within the code
+// 		type: 'resourceMapper', // The UI element type
+// 		default: {
+// 			mappingMode: 'defineBelow',
+// 			value: null,
+// 		},
+// 		required: true,
+// 		// See "Resource mapper type options interface" below for the full typeOptions specification
+// 		typeOptions: {
+// 			loadOptionsDependsOn: ['template.value', 'language'],
+// 			resourceMapper: {
+// 				resourceMapperMethod: 'getMappingVariables',
+// 				mode: 'add',
+// 				fieldWords: {
+// 					singular: 'variable',
+// 					plural: 'variables',
+// 				},
+// 				addAllFields: true,
+// 				multiKeyMatch: false,
+// 				supportAutoMap: false,
+// 				valuesLabel: 'Body',
+// 			},
+// 		},
+// 		displayOptions: {
+// 			show: {
+// 				resource: ['botAPI'],
+// 				operation: ['sendTemplates'],
+// 			},
+// 		},
+// 		routing: {
+// 			send: {
+// 				type: 'body',
+// 				preSend: [setParamsComponents],
+// 			},
+// 		},
+// 	},
+// 	{
+// 		displayName: 'Buttons',
+// 		name: 'buttons', // The name used to reference the element UI within the code
+// 		type: 'resourceMapper', // The UI element type
+// 		default: {
+// 			mappingMode: 'defineBelow',
+// 			value: null,
+// 		},
+// 		required: true,
+// 		// See "Resource mapper type options interface" below for the full typeOptions specification
+// 		typeOptions: {
+// 			loadOptionsDependsOn: ['template.value', 'language'],
+// 			resourceMapper: {
+// 				resourceMapperMethod: 'getMappingButtons',
+// 				mode: 'add',
+// 				fieldWords: {
+// 					singular: 'button',
+// 					plural: 'buttons',
+// 				},
+// 				addAllFields: true,
+// 				multiKeyMatch: false,
+// 				supportAutoMap: false,
+// 				valuesLabel: 'Buttons',
+// 			},
+// 		},
+// 		displayOptions: {
+// 			show: {
+// 				resource: ['botAPI'],
+// 				operation: ['sendTemplates'],
+// 			},
+// 		},
+// 		routing: {
+// 			send: {
+// 				type: 'body',
+// 				preSend: [setParamsComponents],
+// 			},
+// 		},
+// 	},
+// ];
 
 export const botAPINodeFields: INodeProperties[] = [
 	...redirectNodeFields,
 	...metaNodeFields,
-	...templateFields,
+	// ...templateFields,
 ];

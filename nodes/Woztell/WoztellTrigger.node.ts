@@ -6,6 +6,7 @@ import {
 	type IWebhookFunctions,
 	type IWebhookResponseData,
 	NodeConnectionType,
+	NodeOperationError,
 } from 'n8n-workflow';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -61,7 +62,6 @@ export class WoztellTrigger implements INodeType {
 						name: 'channelId',
 						type: 'string',
 						default: '',
-						description: '',
 						displayOptions: {
 							show: {},
 						},
@@ -71,10 +71,6 @@ export class WoztellTrigger implements INodeType {
 						name: 'eventType',
 						type: 'string',
 						default: '',
-						description: '',
-						displayOptions: {
-							show: {},
-						},
 					},
 				],
 			},
@@ -110,12 +106,12 @@ export class WoztellTrigger implements INodeType {
 		if (channelId && channelId !== bodyData?.channelId) {
 			const res = this.getResponseObject();
 			res.status(400).json({ message: 'ChannelId is not valid' });
-			throw new Error('ChannelId is not valid');
+			throw new NodeOperationError(this.getNode(), 'ChannelId is not valid');
 		}
 		if (eventType && eventType !== bodyData?.eventType) {
 			const res = this.getResponseObject();
 			res.status(400).json({ message: 'EventType is not valid' });
-			throw new Error('EventType is not valid');
+			throw new NodeOperationError(this.getNode(), 'EventType is not valid');
 		}
 
 		return {

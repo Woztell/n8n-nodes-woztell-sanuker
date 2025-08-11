@@ -5,9 +5,9 @@ import {
 	INodeProperties,
 } from 'n8n-workflow';
 
-export class WoztellCredential implements ICredentialType {
-	name = 'woztellCredential';
-	displayName = 'Woztell Credential';
+export class woztellCredentialApi implements ICredentialType {
+	name = 'woztellCredentialApi';
+	displayName = 'Woztell API';
 
 	documentationUrl = 'https://doc.woztell.com/docs/documentations/settings/access-token';
 
@@ -24,16 +24,6 @@ export class WoztellCredential implements ICredentialType {
 			},
 			required: true,
 			hint: 'Please enable channel list permission.',
-			default: '',
-		},
-		{
-			displayName: 'Public API Access Token',
-			name: 'publicApiAccessToken',
-			type: 'string',
-			typeOptions: {
-				password: true,
-			},
-			hint: '',
 			default: '',
 		},
 	];

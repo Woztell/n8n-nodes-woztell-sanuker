@@ -1,7 +1,7 @@
 {
 	"name": "n8n-nodes-woztell-sanuker",
 	"version": "0.1.0",
-	"description": "",
+	"description": "n8n-nodes-woztell-sanuker",
 	"keywords": [
 		"n8n-community-node-package",
 		"woztell"
@@ -9,11 +9,11 @@
 	"license": "MIT",
 	"homepage": "",
 	"author": {
-		"name": ""
+		"name": "woztell-sanuker"
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/<...>/n8n-nodes-<...>.git"
+		"url": "https://github.com/<...>/n8n-nodes-woztell-sanuker.git"
 	},
 	"engines": {
 		"node": ">=20.15"
@@ -33,7 +33,7 @@
 	"n8n": {
 		"n8nNodesApiVersion": 1,
 		"credentials": [
-			"dist/credentials/WoztellCredential.credentials.js"
+			"dist/credentials/woztellCredentialApi.credentials.js"
 		],
 		"nodes": [
 			"dist/nodes/Woztell/WoztellTrigger.node.js",

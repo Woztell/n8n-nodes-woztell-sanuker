@@ -2,13 +2,13 @@ import type { INodeType, INodeTypeDescription } from 'n8n-workflow';
 import { NodeConnectionType } from 'n8n-workflow';
 import { botAPINodeFields, botAPIOperations } from './BotAPIDescription';
 import {
-	getLanguages,
-	getMappingButtons,
-	getMappingHeaders,
-	getMappingVariables,
-	getWABAInfo,
+	// getLanguages,
+	// getMappingButtons,
+	// getMappingHeaders,
+	// getMappingVariables,
+	// getWABAInfo,
 	searchChannels,
-	searchTemplates,
+	// searchTemplates,
 	WOZTELL_BASE_URL,
 	WOZTELL_CREDENTIALS_TYPE,
 } from './GenericFunctions';
@@ -66,17 +66,17 @@ export class Woztell implements INodeType {
 
 	methods = {
 		loadOptions: {
-			getLanguages,
-			getWABAInfo,
+			// getLanguages,
+			// getWABAInfo,
 		},
 		resourceMapping: {
-			getMappingVariables,
-			getMappingHeaders,
-			getMappingButtons,
+			// getMappingVariables,
+			// getMappingHeaders,
+			// getMappingButtons,
 		},
 		listSearch: {
 			searchChannels,
-			searchTemplates,
+			// searchTemplates,
 		},
 	};
 }
