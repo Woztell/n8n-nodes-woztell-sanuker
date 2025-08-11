@@ -1,4 +1,4 @@
-# n8n-nodes-woztell
+# n8n-nodes-woztell-sanuker
 
 For easier [Woztell](https://woztell.com/) integration within your n8n workflows.
 
@@ -12,7 +12,7 @@ For easier [Woztell](https://woztell.com/) integration within your n8n workflows
 Install [the community node package in your n8n instance](https://docs.n8n.io/integrations/community-nodes/installation/gui-install/):
 
 ```
-@woztell/n8n-nodes-woztell
+@woztell/n8n-nodes-woztell-sanuker
 ```
 
 ## Operations
