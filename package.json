@@ -8,13 +8,9 @@
 		"sanuker"
 	],
 	"license": "MIT",
-	"homepage": "",
+	"homepage": "https://woztell.com/?partner=SANUKER",
 	"author": {
 		"name": "woztell-sanuker"
-	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/<...>/n8n-nodes-woztell-sanuker.git"
 	},
 	"engines": {
 		"node": ">=20.15"

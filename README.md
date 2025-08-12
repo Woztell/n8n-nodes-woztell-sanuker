@@ -21,8 +21,8 @@ You can use the Trigger node to listen for webhook requests.
 The Send Response node allows you to send messages to specific users.  
 If you've configured a chatbot in Woztell, the Redirect Member to Node can direct users to a chatbot node.  
 
-![sendResponse](screenshots/sendResponse.png)
-![redirectMemberToNode](screenshots/redirectMemberToNode.png)
+![sendResponse](https://store.sanuker.cn/nn/images/sendResponse.png)
+![redirectMemberToNode](https://store.sanuker.cn/nn/images/redirectMemberToNode.png)
 
 ## Credentials
 
@@ -31,8 +31,8 @@ If you've configured a chatbot in Woztell, the Redirect Member to Node can direc
 
 For more details, please refer to this [link](https://doc.woztell.com/docs/documentations/settings/access-token).
 
-![alt text](screenshots/accessToken.png)
-![alt text](screenshots/credential.png)
+![alt text](https://store.sanuker.cn/nn/images/accessToken.png)
+![alt text](https://store.sanuker.cn/nn/images/credential.png)
 
 ## Resources
 
