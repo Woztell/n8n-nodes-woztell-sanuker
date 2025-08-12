@@ -8,7 +8,6 @@ import {
 	NodeConnectionType,
 	NodeOperationError,
 } from 'n8n-workflow';
-import { v4 as uuidv4 } from 'uuid';
 
 export class WoztellTrigger implements INodeType {
 	description: INodeTypeDescription = {
@@ -36,7 +35,7 @@ export class WoztellTrigger implements INodeType {
 				httpMethod: 'POST',
 				responseMode: 'lastNode',
 				responseData: 'allEntries',
-				path: '={{$parameter["path"]}}',
+				path: `={{$parameter["path"] || $nodeId}}`,
 				isFullPath: true,
 			},
 		],
@@ -45,9 +44,8 @@ export class WoztellTrigger implements INodeType {
 				displayName: 'Path',
 				name: 'path',
 				type: 'string',
-				default: uuidv4(),
-				required: true,
-				placeholder: 'webhook',
+				default: '',
+				placeholder: 'path',
 				description: 'The path for the webhook URL',
 			},
 			{

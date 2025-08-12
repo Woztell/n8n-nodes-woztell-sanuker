@@ -105,7 +105,7 @@ export async function getResponses(
 	>;
 
 	if (!responses.response?.length) {
-		return requestOptions;
+		throw new TypeError('Responses - Messsage type not found');
 	}
 
 	if (!requestOptions.body) {
@@ -113,9 +113,16 @@ export async function getResponses(
 	}
 
 	const result = responses.response.reduce((memo: any[], r) => {
-		memo.push(jsonParse(r.detail));
+		const resp = jsonParse(r.detail) as IDataObject;
+		if (Object.keys(resp).length) {
+			memo.push(jsonParse(r.detail));
+		}
 		return memo;
 	}, []);
+
+	if (!result.length) {
+		throw new TypeError('Responses - Messsage type not found');
+	}
 
 	set(requestOptions.body as IDataObject, 'responses', result);
 	return requestOptions;

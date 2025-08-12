@@ -1,6 +1,6 @@
 {
 	"name": "@woztell-sanuker/n8n-nodes-woztell-sanuker",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "n8n-nodes-woztell-sanuker",
 	"keywords": [
 		"n8n-community-node-package",
@@ -54,7 +54,6 @@
 		"n8n-workflow": "*"
 	},
 	"dependencies": {
-		"lodash": "^4.17.21",
-		"uuid": "^11.1.0"
+		"lodash": "^4.17.21"
 	}
 }
