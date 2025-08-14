@@ -26,6 +26,16 @@ export class woztellCredentialApi implements ICredentialType {
 			hint: 'Please enable channel list permission.',
 			default: '',
 		},
+		{
+			displayName: 'Woztell Channel API',
+			name: 'publicApiAccessToken',
+			type: 'string',
+			typeOptions: {
+				password: true,
+			},
+			hint: '',
+			default: '',
+		},
 	];
 
 	// This credential is currently not used by any node directly
