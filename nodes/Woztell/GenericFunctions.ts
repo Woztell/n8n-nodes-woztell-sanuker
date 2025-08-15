@@ -24,7 +24,7 @@ export const WOZTELL_CREDENTIALS_TYPE = 'woztellCredentialApi';
 
 export const WOZTELL_BASE_URL = 'https://open.api.woztell.com/v3';
 export const WOZTELL_BOT_BASE_URL = 'https://bot.api.woztell.com/';
-const WOZTELL_PUBLIC_API_URL = 'https://api.whatsapp-cloud.woztell.sanuker.com/v1.1/api';
+const WOZTELL_PUBLIC_API_URL = 'https://api.whatsapp-cloud.woztell.sanuker.com/v1.2/api';
 
 async function apiRequest(
 	this: ILoadOptionsFunctions,
@@ -417,7 +417,7 @@ export async function getMappingButtons(
 	}
 
 	const result = buttons?.buttons
-		.filter((r: any) => r.type !== 'URL')
+		.filter((r: any) => r.type === 'FLOW' || r.type === 'QUICK_REPLY')
 		.map((r: any) => {
 			return {
 				name: `Payload(${r.type} - ${r.text})`,
@@ -506,7 +506,7 @@ export async function setParamsComponents(
 		parameters:
 			| { type: string; text: string }[]
 			| { [x: number]: { link: string }; type: any }[]
-			| { type: string; payload: string }[];
+			| { type: string; payload?: string; action?: any }[];
 		sub_type?: any;
 		index?: string;
 	}[] = [];
@@ -571,12 +571,26 @@ export async function setParamsComponents(
 						],
 					});
 				}
+
+				if (v.type === 'FLOW') {
+					const payload = buttonParams.value[`${v.type} - ${v.text}`].trim();
+					components.push({
+						type: 'button',
+						sub_type: v.type.toLowerCase(),
+						index: i + '',
+						parameters: [
+							{
+								type: 'action',
+								action: {
+									flow_token: payload ? `${v.flow_id}:${payload}` : v.flow_id,
+								},
+							},
+						],
+					});
+				}
 			});
 		}
 	});
-
-	// console.log(components);
-	// throw new Error('stop');
 
 	set(requestOptions.body as IDataObject, 'response[0].components', components);
 	return requestOptions;

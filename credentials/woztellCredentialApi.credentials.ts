@@ -33,7 +33,8 @@ export class woztellCredentialApi implements ICredentialType {
 			typeOptions: {
 				password: true,
 			},
-			hint: '',
+			description: 'Please configure the token to use the message templates',
+			hint: 'The token is located at Woztell -> Channels -> Channel(Edit) -> Advanced Access -> Access Tokens',
 			default: '',
 		},
 	];
