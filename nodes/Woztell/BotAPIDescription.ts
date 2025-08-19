@@ -87,7 +87,7 @@ export const botAPIOperations: INodeProperties[] = [
 		],
 		displayOptions: {
 			show: {
-				resource: ['botAPI'],
+				resource: ['botAPI', 'memberAPI'],
 			},
 		},
 		routing: {

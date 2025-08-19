@@ -12,6 +12,7 @@ import {
 	WOZTELL_BASE_URL,
 	WOZTELL_CREDENTIALS_TYPE,
 } from './GenericFunctions';
+import { memberAPINodeFields, memberAPIOperations } from './MemberAPIDescription';
 
 export class Woztell implements INodeType {
 	description: INodeTypeDescription = {
@@ -53,14 +54,20 @@ export class Woztell implements INodeType {
 						name: 'Bot API',
 						value: 'botAPI',
 					},
+					{
+						name: 'Member',
+						value: 'memberAPI',
+					},
 				],
 				default: 'botAPI',
 				disabledOptions: {
 					hideOnCloud: true,
 				},
 			},
+			...memberAPIOperations,
 			...botAPIOperations,
 			...botAPINodeFields,
+			...memberAPINodeFields,
 		],
 	};
 

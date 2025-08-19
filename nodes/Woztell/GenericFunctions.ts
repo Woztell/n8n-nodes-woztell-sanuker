@@ -18,7 +18,7 @@ import {
 	NodeApiError,
 	ResourceMapperFields,
 } from 'n8n-workflow';
-import { getChannelQuery, getChannelsQuery } from './BaseQueries';
+import { getChannelQuery, getChannelsQuery, getMemberIdQuery } from './BaseQueries';
 
 export const WOZTELL_CREDENTIALS_TYPE = 'woztellCredentialApi';
 
@@ -27,7 +27,7 @@ export const WOZTELL_BOT_BASE_URL = 'https://bot.api.woztell.com/';
 const WOZTELL_PUBLIC_API_URL = 'https://api.whatsapp-cloud.woztell.sanuker.com/v1.2/api';
 
 async function apiRequest(
-	this: ILoadOptionsFunctions,
+	this: ILoadOptionsFunctions | IExecuteSingleFunctions,
 	method: IHttpRequestMethods,
 	url: string,
 	body: object,
@@ -171,30 +171,6 @@ export async function cleanRecipientId(
 	return requestOptions;
 }
 
-export const getCursorPaginator = (
-	extractItems: (items: INodeExecutionData[]) => INodeExecutionData[],
-) => {
-	return async function cursorPagination(
-		this: IExecutePaginationFunctions,
-		requestOptions: DeclarativeRestApiSettings.ResultOptions,
-	): Promise<INodeExecutionData[]> {
-		let executions: INodeExecutionData[] = [];
-		let responseData: INodeExecutionData[];
-		let nextCursor: string | undefined = undefined;
-		const returnAll = this.getNodeParameter('returnAll', true) as boolean;
-
-		do {
-			(requestOptions.options.body as IDataObject).cursor = nextCursor;
-			responseData = await this.makeRoutingRequest(requestOptions);
-			const lastItem = responseData[responseData.length - 1].json;
-			nextCursor = (lastItem.records as IDataObject)?.cursor as string | undefined;
-			executions = executions.concat(extractItems(responseData));
-		} while (returnAll && nextCursor);
-
-		return executions;
-	};
-};
-
 /**
  * pagination
  * @param this
@@ -206,33 +182,29 @@ export async function handleOptionsPagination(
 	requestData: DeclarativeRestApiSettings.ResultOptions,
 ): Promise<INodeExecutionData[]> {
 	const responseData: INodeExecutionData[] = [];
-	const resourceMapping: { [key: string]: string } = {
-		channels: 'data.apiViewer.channels',
-	};
-	const rootProperty = resourceMapping.channels;
-
 	requestData.options.body = requestData.options.body || {};
-	let responseTotal = 0;
 	let hasNextPage = true;
+	let responseItem: any = {
+		edges: [],
+		pageInfo: {},
+	};
 
 	do {
 		const pageResponseData: INodeExecutionData[] = await this.makeRoutingRequest(requestData);
-		const item = pageResponseData[0].json[rootProperty] as [
-			{
-				edges: [];
-				pageInfo: { totalCount: number; endCursor: string; hasNextPage: boolean };
-			},
-		];
-		item[0].edges.forEach((r) => responseData.push({ json: r }));
+		const item = pageResponseData[0].json as {
+			edges: any[];
+			pageInfo: { totalCount: number; endCursor: string; hasNextPage: boolean };
+		};
 
-		const endCursor = item[0].pageInfo.endCursor;
-		hasNextPage = item[0].pageInfo.hasNextPage;
-		Object.assign(requestData.options.body, {
-			variables: { first: 2, search: '', endCursor, sortBy: { _id: -1 } },
-		});
-		responseTotal = (item[0].pageInfo.totalCount as number) || 0;
-	} while (responseTotal > responseData.length && hasNextPage);
+		responseItem.edges.push(...item.edges);
+		responseItem.pageInfo = item.pageInfo;
 
+		const endCursor = item.pageInfo.endCursor;
+		hasNextPage = item.pageInfo.hasNextPage;
+		set(requestData.options.body as IDataObject, 'variables.after', endCursor);
+	} while (hasNextPage);
+
+	responseData.push({ json: responseItem });
 	return responseData;
 }
 
@@ -593,6 +565,41 @@ export async function setParamsComponents(
 	});
 
 	set(requestOptions.body as IDataObject, 'response[0].components', components);
+	return requestOptions;
+}
+
+export async function setParamsMemberId(
+	this: IExecuteSingleFunctions,
+	requestOptions: IHttpRequestOptions,
+): Promise<IHttpRequestOptions> {
+	const externalId = this.getNodeParameter('externalId', '') as String;
+	const channel = this.getNodeParameter('channel', {}) as IDataObject;
+	const channelId = channel.value;
+
+	if (!externalId || !channelId) {
+		throw new TypeError('ChannelId and externalId are required');
+	}
+
+	const result = await apiRequest.call(this, 'POST', '', {
+		query: getMemberIdQuery,
+		variables: {
+			externalId,
+			channelId,
+		},
+	});
+
+	const data = jsonParse(result) as any;
+	const memberId = data?.data?.apiViewer?.member?._id;
+
+	if (!memberId) {
+		throw new TypeError('Failed to get memberId');
+	}
+
+	if (!requestOptions.body) {
+		requestOptions.body = {};
+	}
+
+	set(requestOptions.body as IDataObject, 'variables.memberId', memberId);
 	return requestOptions;
 }
 

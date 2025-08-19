@@ -42,3 +42,147 @@ export const getChannelQuery = `query getChannel($type: String, $channelId: ID) 
   }
 }
 `;
+
+/**
+ * get members by tags
+ * variable: channelId, first, tagFilters
+ */
+export const getMembersQuery = `query getMembers(
+  $first: IntMax100
+  $channelId: String
+  $tagFilters: [TagFilter]
+  $after: String
+) {
+  apiViewer {
+    members(first: $first, channelId: $channelId, tagFilters: $tagFilters, after: $after) {
+      edges {
+        node {
+          _id
+          externalId
+          name
+        }
+      }
+      pageInfo {
+        hasNextPage
+        totalCount
+        endCursor
+      }
+    }
+  }
+}
+`;
+
+/**
+ * add member tags
+ * variable: channelId, externalId, tags
+ */
+export const addMemberTags = `mutation AddMemberTags($input: ModifyMemberTagsInput!) {
+  addMemberTags(input: $input) {
+    err_code
+    member {
+      _id
+      externalId
+    }
+    memberId
+    ok
+  }
+}
+`;
+
+/**
+ * batch update members
+ */
+export const batchUpdateMemberInput = `mutation batchUpdateMemberTags($input: BatchUpdateMemberInput!) {
+  batchUpdateMember(input: $input) {
+    clientMutationId
+  }
+}
+`;
+
+/**
+ * get member info
+ * variable: channelId, externalId
+ */
+export const getMemberInfoQuery = `query getMemberInfo($channelId: ID, $externalId: ID) {
+  apiViewer {
+    member(channelId: $channelId, externalId: $externalId) {
+      _id
+      createdAt
+      updatedAt
+      channelId
+      platform
+      tags
+      meta
+      botMeta {
+        subscribe
+        liveChat
+        treeId
+        nodeCompositeId
+        tree {
+          name
+        }
+        node {
+          name
+        }
+      }
+      name
+      firstName
+      lastName
+      gender
+      customLocale
+      locale
+      email
+    }
+  }
+}
+`;
+
+/**
+ * get conversation history
+ * variable: channelId, memberId
+ */
+export const getConversationHistoryQuery = `query getConversationHistory($channelId: String, $memberId: String) {
+  apiViewer {
+    conversationHistory(channelId: $channelId, memberId: $memberId, last: 100) {
+      edges {
+        node {
+          _id
+          messageEvent
+          id
+          createdAt
+          updatedAt
+          sentAt
+          readAt
+          deliveredAt
+          deletedAt
+          from
+          member {
+            name
+          }
+          memberId
+          errors
+          failedAt
+          platform
+          channel {
+            name
+          }
+          channelId
+          tags
+          meta
+          etag
+          isMultipleParty
+        }
+      }
+    }
+  }
+}
+`;
+
+export const getMemberIdQuery = `query getMemberId($channelId: ID, $externalId: ID) {
+  apiViewer {
+    member(channelId: $channelId, externalId: $externalId) {
+      _id
+    }
+  }
+}
+`;
