@@ -589,6 +589,43 @@ export const templateFields: INodeProperties[] = [
 			},
 		},
 	},
+	{
+		displayName: 'Carousel',
+		name: 'carousel',
+		type: 'resourceMapper',
+		default: {
+			mappingMode: 'defineBelow',
+			value: null,
+		},
+		required: true,
+		typeOptions: {
+			loadOptionsDependsOn: ['template.value', 'language'],
+			resourceMapper: {
+				resourceMapperMethod: 'getMappingCarousel',
+				mode: 'add',
+				fieldWords: {
+					singular: 'card',
+					plural: 'cards',
+				},
+				addAllFields: true,
+				multiKeyMatch: false,
+				supportAutoMap: false,
+				valuesLabel: 'Carousel',
+			},
+		},
+		displayOptions: {
+			show: {
+				resource: ['botAPI'],
+				operation: ['sendTemplates'],
+			},
+		},
+		routing: {
+			send: {
+				type: 'body',
+				preSend: [setParamsComponents],
+			},
+		},
+	},
 ];
 
 export const botAPINodeFields: INodeProperties[] = [

@@ -4,6 +4,7 @@ import { botAPINodeFields, botAPIOperations } from './BotAPIDescription';
 import {
 	getLanguages,
 	getMappingButtons,
+	getMappingCarousel,
 	getMappingHeaders,
 	getMappingVariables,
 	getWABAInfo,
@@ -81,6 +82,7 @@ export class Woztell implements INodeType {
 			getMappingVariables,
 			getMappingHeaders,
 			getMappingButtons,
+			getMappingCarousel,
 		},
 		listSearch: {
 			searchChannels,

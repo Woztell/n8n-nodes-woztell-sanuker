@@ -26,6 +26,8 @@ export const WOZTELL_BASE_URL = 'https://open.api.woztell.com/v3';
 export const WOZTELL_BOT_BASE_URL = 'https://bot.api.woztell.com/';
 const WOZTELL_PUBLIC_API_URL = 'https://api.whatsapp-cloud.woztell.sanuker.com/v1.2/api';
 
+const MEDIA_TYPES = ['IMAGE', 'DOCUMENT', 'VIDEO'];
+
 async function apiRequest(
 	this: ILoadOptionsFunctions | IExecuteSingleFunctions,
 	method: IHttpRequestMethods,
@@ -76,20 +78,6 @@ async function apiRequest(
  * @param requestOptions
  * @returns
  */
-export async function getResponse(
-	this: IExecuteSingleFunctions,
-	requestOptions: IHttpRequestOptions,
-): Promise<IHttpRequestOptions> {
-	const response = this.getNodeParameter('response', null, { ensureType: 'json' });
-
-	if (!requestOptions.body) {
-		requestOptions.body = {};
-	}
-
-	set(requestOptions.body as IDataObject, 'response', [response]);
-	return requestOptions;
-}
-
 export async function getResponses(
 	this: IExecuteSingleFunctions,
 	requestOptions: IHttpRequestOptions,
@@ -356,7 +344,7 @@ export async function getMappingHeaders(
 		return { fields: [] };
 	}
 	const header = languageTemplate.components.find((r) => r.type === 'HEADER');
-	if (!header?.format || !['IMAGE', 'DOCUMENT', 'VIDEO'].includes(header.format)) {
+	if (!header?.format || !MEDIA_TYPES.includes(header.format)) {
 		return { fields: [] };
 	}
 
@@ -413,6 +401,65 @@ export async function getMappingButtons(
 			};
 		}),
 	);
+	return { fields };
+}
+
+export async function getMappingCarousel(
+	this: ILoadOptionsFunctions,
+): Promise<ResourceMapperFields> {
+	const languageTemplate = await getLanguageTemplate.call(this);
+	if (!languageTemplate) {
+		return { fields: [] };
+	}
+	const carousel = languageTemplate.components.find((r) => r.type === 'CAROUSEL');
+	if (!carousel?.cards?.length) {
+		return { fields: [] };
+	}
+
+	const result = carousel.cards.reduce((memo: any[], r: any, i: number) => {
+		if (r.components?.length) {
+			r.components.forEach(
+				(v: { type: string; format: string; buttons: { type: string; text: any }[] }) => {
+					const cardIndex = `Card #${i + 1}:`;
+					if (v.type === 'HEADER' && MEDIA_TYPES.includes(v.format)) {
+						memo.push({
+							name: `${cardIndex} ${v.format} ID`,
+							value: `card${i + 1}Id`,
+						});
+					}
+					if (v.type === 'BUTTONS') {
+						v.buttons.forEach((z: { type: string; text: any }, index) => {
+							if (z.type === 'QUICK_REPLY') {
+								memo.push({
+									name: `${cardIndex} Payload(${z.type} - ${z.text})`,
+									value: `card${i + 1}${index}`,
+								});
+							}
+						});
+					}
+				},
+			);
+		}
+		return memo;
+	}, []);
+
+	const type: FieldType = 'string';
+	const fields = await Promise.all(
+		result.map(async (r: { value: any; name: any }) => {
+			const options = undefined;
+
+			return {
+				id: r.value,
+				displayName: r.name,
+				required: true,
+				defaultMatch: false,
+				display: true,
+				type,
+				options,
+			};
+		}),
+	);
+
 	return { fields };
 }
 
@@ -475,16 +522,14 @@ export async function setParamsComponents(
 
 	let components: {
 		type: string;
-		parameters:
-			| { type: string; text: string }[]
-			| { [x: number]: { link: string }; type: any }[]
-			| { type: string; payload?: string; action?: any }[];
+		parameters?: any[];
 		sub_type?: any;
 		index?: string;
+		cards?: any[];
 	}[] = [];
 
 	languageTemplate.components.forEach((r) => {
-		if (r.type === 'HEADER' && ['IMAGE', 'DOCUMENT', 'VIDEO'].includes(r?.format)) {
+		if (r.type === 'HEADER' && MEDIA_TYPES.includes(r?.format)) {
 			const headerParams = this.getNodeParameter('headers', {}) as Record<
 				string,
 				{
@@ -505,7 +550,7 @@ export async function setParamsComponents(
 				});
 			}
 		}
-		if (r.type === 'BODY') {
+		if (r.type === 'BODY' && r.example) {
 			const bodyParams = this.getNodeParameter('variables', {}, { ensureType: 'json' }) as Record<
 				string,
 				Record<string, string>
@@ -560,6 +605,61 @@ export async function setParamsComponents(
 						],
 					});
 				}
+			});
+		}
+		if (r.type === 'CAROUSEL' && r.cards?.length) {
+			const subComponents: any[] = [];
+			const carouselParams = this.getNodeParameter(
+				'carousel',
+				{},
+				{ ensureType: 'json' },
+			) as Record<string, Record<string, string>>;
+
+			r.cards.forEach((v: any, i: number) => {
+				const cardComponents: any[] = [];
+				v.components?.forEach((z: { buttons: any; type: string; format: string }) => {
+					if (z.type === 'HEADER' && MEDIA_TYPES.includes(z.format)) {
+						cardComponents.push({
+							type: 'header',
+							parameters: [
+								{
+									type: z.format.toLowerCase(),
+									[z.format.toLowerCase()]: {
+										id: carouselParams.value[`card${i + 1}Id`],
+									},
+								},
+							],
+						});
+					}
+					if (z.type === 'BUTTONS') {
+						z.buttons.forEach((y: { type: string }, yi: number) => {
+							if (y.type === 'QUICK_REPLY') {
+								const payload = carouselParams.value[`card${i + 1}${yi}`];
+								cardComponents.push({
+									type: 'button',
+									sub_type: y.type,
+									index: yi + '',
+									parameters: [
+										{
+											type: 'payload',
+											payload,
+										},
+									],
+								});
+							}
+						});
+					}
+				});
+				if (cardComponents.length) {
+					subComponents.push({
+						card_index: i,
+						components: cardComponents,
+					});
+				}
+			});
+			components.push({
+				type: 'CAROUSEL',
+				cards: subComponents,
 			});
 		}
 	});
