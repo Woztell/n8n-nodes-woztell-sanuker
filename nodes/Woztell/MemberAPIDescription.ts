@@ -19,7 +19,7 @@ export const memberAPIOperations: INodeProperties[] = [
 			{
 				name: 'Get Members',
 				value: 'getMembers',
-				action: 'Get Members',
+				action: 'Get members',
 				routing: {
 					request: {
 						body: {
@@ -53,7 +53,7 @@ export const memberAPIOperations: INodeProperties[] = [
 			{
 				name: 'Member Tagging',
 				value: 'memberTagging',
-				action: 'Member Tagging',
+				action: 'Member tagging',
 				routing: {
 					request: {
 						body: {
@@ -70,7 +70,7 @@ export const memberAPIOperations: INodeProperties[] = [
 			{
 				name: 'Get Member Info',
 				value: 'getMemberInfo',
-				action: 'Get Member Info',
+				action: 'Get member info',
 				routing: {
 					request: {
 						body: {
@@ -96,7 +96,7 @@ export const memberAPIOperations: INodeProperties[] = [
 			{
 				name: 'Get Conversation History',
 				value: 'getConversationHistory',
-				action: 'Get Conversation History',
+				action: 'Get conversation history',
 				routing: {
 					request: {
 						body: {
@@ -210,7 +210,7 @@ export const getMembersNodeFields: INodeProperties[] = [
 		},
 		default: '',
 		placeholder: 'NjNkM2UwNzRiY2JlM2Q4M2RjMW123456',
-		description: 'pageInfo.cursor',
+		description: 'PageInfo.cursor',
 	},
 ];
 
