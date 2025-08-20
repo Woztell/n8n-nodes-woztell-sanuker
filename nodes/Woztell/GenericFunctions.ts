@@ -18,7 +18,7 @@ import {
 	NodeApiError,
 	ResourceMapperFields,
 } from 'n8n-workflow';
-import { getChannelQuery, getChannelsQuery, getMemberIdQuery } from './BaseQueries';
+import { getChannelQuery, getChannelsQuery, getMemberIdQuery, getTreesQuery } from './BaseQueries';
 
 export const WOZTELL_CREDENTIALS_TYPE = 'woztellCredentialApi';
 
@@ -671,6 +671,35 @@ export async function searchTemplates(
 		return {
 			name: `${r?.name}`,
 			value: jsonStringify(r),
+		};
+	});
+
+	return {
+		results,
+	};
+}
+
+export async function searchTrees(
+	this: ILoadOptionsFunctions,
+	search?: string,
+	// paginationToken?: string,
+): Promise<INodeListSearchResult> {
+	let variables = {
+		first: 10,
+		search,
+		sortBy: { _id: -1 },
+	};
+
+	const result = await apiRequest.call(this, 'POST', '', {
+		query: getTreesQuery,
+		variables,
+	});
+
+	const data = jsonParse(result) as any;
+	const results = data?.data?.apiViewer?.trees?.edges?.map((r: any) => {
+		return {
+			name: `${r?.node?.name}(${r?.node?._id})`,
+			value: r?.node?._id,
 		};
 	});
 

@@ -60,6 +60,7 @@ export const getMembersQuery = `query getMembers(
           _id
           externalId
           name
+          tags
         }
       }
       pageInfo {
@@ -141,9 +142,19 @@ export const getMemberInfoQuery = `query getMemberInfo($channelId: ID, $external
  * get conversation history
  * variable: channelId, memberId
  */
-export const getConversationHistoryQuery = `query getConversationHistory($channelId: String, $memberId: String) {
+export const getConversationHistoryQuery = `query getConversationHistory(
+  $channelId: String
+  $memberId: String
+  $last: IntMax100
+  $before: String
+) {
   apiViewer {
-    conversationHistory(channelId: $channelId, memberId: $memberId, last: 100) {
+    conversationHistory(
+      channelId: $channelId
+      memberId: $memberId
+      last: $last
+      before: $before
+    ) {
       edges {
         node {
           _id
@@ -173,15 +184,61 @@ export const getConversationHistoryQuery = `query getConversationHistory($channe
           isMultipleParty
         }
       }
+      pageInfo {
+        hasPreviousPage
+        startCursor
+      }
+    }
+  }
+}
+
+`;
+
+/**
+ * get memberId
+ * variable: channelId, externalId
+ */
+export const getMemberIdQuery = `query getMemberId($channelId: ID, $externalId: ID) {
+  apiViewer {
+    member(channelId: $channelId, externalId: $externalId) {
+      _id
     }
   }
 }
 `;
 
-export const getMemberIdQuery = `query getMemberId($channelId: ID, $externalId: ID) {
+/**
+ * get trees
+ * variable: first, search
+ */
+export const getTreesQuery = `query getTrees($first: IntMax100, $search: String) {
   apiViewer {
-    member(channelId: $channelId, externalId: $externalId) {
-      _id
+    trees (first: $first, search: $search) {
+      edges {
+        node {
+          name
+          _id
+        }
+      }
+    }
+  }
+}
+`;
+
+/**
+ * get nodes by treeId
+ * variable: treeId
+ */
+export const getNodesQuery = `query getNodes($treeIds: [ID]) {
+  apiViewer {
+    nodes (treeIds: $treeIds, first: 100, global: false) {
+      edges {
+        node {
+          _id
+          name
+          compositeId
+        }
+      }
     }
   }
 }

@@ -28,6 +28,7 @@ export const memberAPIOperations: INodeProperties[] = [
 								tagFilters: [{ operator: 'IN' }],
 								first: '={{$parameter.maxResults || 100}}',
 								channelId: '={{$parameter.channel}}',
+								after: '={{$parameter.cursor || ""}}',
 							},
 						},
 					},
@@ -102,6 +103,8 @@ export const memberAPIOperations: INodeProperties[] = [
 							query: getConversationHistoryQuery,
 							variables: {
 								channelId: '={{$parameter.channel}}',
+								last: '={{$parameter.maxResults || 100}}',
+								before: '={{$parameter.cursor || ""}}',
 							},
 						},
 					},
@@ -113,7 +116,7 @@ export const memberAPIOperations: INodeProperties[] = [
 							{
 								type: 'rootProperty',
 								properties: {
-									property: 'data.apiViewer.conversationHistory.edges',
+									property: 'data.apiViewer.conversationHistory',
 								},
 							},
 						],
@@ -179,8 +182,10 @@ export const getMembersNodeFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['memberAPI'],
-				operation: ['getMembers'],
-				returnAll: [false],
+				operation: ['getMembers', 'getConversationHistory'],
+			},
+			hide: {
+				returnAll: [true],
 			},
 		},
 		typeOptions: {
@@ -192,24 +197,20 @@ export const getMembersNodeFields: INodeProperties[] = [
 	},
 	{
 		displayName: 'Cursor',
-		name: 'after',
+		name: 'cursor',
 		type: 'string',
 		displayOptions: {
 			show: {
 				resource: ['memberAPI'],
-				operation: ['getMembers'],
-				returnAll: [false],
+				operation: ['getMembers', 'getConversationHistory'],
+			},
+			hide: {
+				returnAll: [true],
 			},
 		},
 		default: '',
 		placeholder: 'NjNkM2UwNzRiY2JlM2Q4M2RjMW123456',
-		description: 'pageInfo.endCursor',
-		routing: {
-			send: {
-				type: 'body',
-				property: 'variables.after',
-			},
-		},
+		description: 'pageInfo.cursor',
 	},
 ];
 
@@ -236,35 +237,6 @@ export const taggingNodeFields: INodeProperties[] = [
 			},
 		},
 	},
-	// {
-	// 	displayName: 'ExternalIds',
-	// 	name: 'externalIds',
-	// 	type: 'string',
-	// 	default: '',
-	// 	required: true,
-	// 	description: 'ID in integration. E.g. PSID on Facebook, phone number on WhatsApp, etc',
-	// 	hint: 'When entering a phone number, make sure to include the country code',
-	// 	requiresDataPath: 'multiple',
-	// 	routing: {
-	// 		send: {
-	// 			type: 'body',
-	// 			property: 'variables.input.externalIds',
-	// 		},
-	// 	},
-	// 	displayOptions: {
-	// 		show: {
-	// 			resource: ['memberAPI'],
-	// 			operation: ['memberTagging'],
-	// 			batchUpdate: [
-	// 				{
-	// 					_cnd: {
-	// 						eq: true,
-	// 					},
-	// 				},
-	// 			],
-	// 		},
-	// 	},
-	// },
 	{
 		displayName: 'Tags',
 		name: 'tags',
@@ -290,6 +262,6 @@ export const taggingNodeFields: INodeProperties[] = [
 ];
 
 export const memberAPINodeFields: INodeProperties[] = [
-	...getMembersNodeFields,
 	...taggingNodeFields,
+	...getMembersNodeFields,
 ];

@@ -9,6 +9,7 @@ import {
 	getWABAInfo,
 	searchChannels,
 	searchTemplates,
+	searchTrees,
 	WOZTELL_BASE_URL,
 	WOZTELL_CREDENTIALS_TYPE,
 } from './GenericFunctions';
@@ -84,6 +85,7 @@ export class Woztell implements INodeType {
 		listSearch: {
 			searchChannels,
 			searchTemplates,
+			searchTrees,
 		},
 	};
 }

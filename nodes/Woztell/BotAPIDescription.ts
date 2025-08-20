@@ -7,6 +7,7 @@ import {
 	setParamsContent,
 	WOZTELL_BOT_BASE_URL,
 } from './GenericFunctions';
+import { getNodesQuery } from './BaseQueries';
 
 export const botAPIOperations: INodeProperties[] = [
 	{
@@ -170,10 +171,27 @@ export const redirectNodeFields: INodeProperties[] = [
 	{
 		displayName: 'Tree',
 		name: 'tree',
-		type: 'string',
+		type: 'resourceLocator',
+		default: { mode: 'id', value: '' },
 		required: true,
+		modes: [
+			{
+				displayName: 'ID',
+				name: 'id',
+				type: 'string',
+			},
+			{
+				displayName: 'List',
+				name: 'list',
+				type: 'list',
+				typeOptions: {
+					searchListMethod: 'searchTrees',
+					searchable: true,
+					searchFilterRequired: false,
+				},
+			},
+		],
 		description: 'Target tree you wish to redirect to',
-		default: '',
 		routing: {
 			send: {
 				type: 'body',
@@ -190,8 +208,40 @@ export const redirectNodeFields: INodeProperties[] = [
 	{
 		displayName: 'Node CompositeId',
 		name: 'redirectNodeCompositeId',
-		type: 'string',
+		type: 'options',
 		required: true,
+		typeOptions: {
+			loadOptionsDependsOn: ['tree.value'],
+			loadOptions: {
+				routing: {
+					request: {
+						body: {
+							query: getNodesQuery,
+							variables: {
+								treeIds: ['={{$parameter.tree}}'],
+							},
+						},
+					},
+					output: {
+						postReceive: [
+							{
+								type: 'rootProperty',
+								properties: {
+									property: 'data.apiViewer.nodes.edges',
+								},
+							},
+							{
+								type: 'setKeyValue',
+								properties: {
+									name: '={{$responseItem.node.name}} ({{$responseItem.node.compositeId}})',
+									value: '={{$responseItem.node.compositeId}}',
+								},
+							},
+						],
+					},
+				},
+			},
+		},
 		default: '',
 		description: 'Target node you wish to redirect to',
 		routing: {
@@ -223,6 +273,13 @@ export const redirectNodeFields: INodeProperties[] = [
 			show: {
 				resource: ['botAPI'],
 				operation: ['redirectMemberToNode'],
+				tree: [
+					{
+						_cnd: {
+							exists: true,
+						},
+					},
+				],
 			},
 		},
 	},
