@@ -306,6 +306,16 @@ export async function getMappingVariables(
 				type: 'string',
 			});
 		});
+	} else if (body && body.text?.includes('{{1}}')) {
+		const reg = /\{\{(\d+)\}\}/g;
+		const matches = [...body.text.matchAll(reg)];
+		matches.forEach((match) => {
+			result.push({
+				name: `Variable #${match[1]}`,
+				value: `variable${match[1]}`,
+				type: 'string',
+			});
+		});
 	}
 
 	const fields = await Promise.all(
@@ -529,7 +539,7 @@ export async function setParamsComponents(
 				});
 			}
 		}
-		if (r.type === 'BODY' && r.example) {
+		if (r.type === 'BODY' && r.text?.includes('{{1}}')) {
 			const bodyParams = this.getNodeParameter('variables', {}, { ensureType: 'json' }) as Record<
 				string,
 				Record<string, string>
