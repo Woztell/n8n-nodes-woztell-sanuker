@@ -19,6 +19,7 @@ import {
 	ResourceMapperFields,
 } from 'n8n-workflow';
 import { getChannelQuery, getChannelsQuery, getMemberIdQuery, getTreesQuery } from './BaseQueries';
+import { setTimeout } from 'timers/promises';
 
 export const WOZTELL_CREDENTIALS_TYPE = 'woztellCredentialApi';
 
@@ -190,6 +191,9 @@ export async function handleOptionsPagination(
 		const endCursor = item.pageInfo.endCursor;
 		hasNextPage = item.pageInfo.hasNextPage;
 		set(requestData.options.body as IDataObject, 'variables.after', endCursor);
+
+		// timeout
+		await setTimeout(2000);
 	} while (hasNextPage);
 
 	responseData.push({ json: responseItem });
@@ -250,14 +254,14 @@ export async function getWABAInfo(this: ILoadOptionsFunctions): Promise<INodePro
 	const channelId = channel.value;
 	const result = await apiRequest.call(this, 'POST', '', {
 		query: getChannelQuery,
-		variables: { channelId, sortBy: { _id: -1 } },
+		variables: { channelId },
 	});
 
 	if (!result) {
 		return [];
 	}
 	const data = jsonParse(result) as any;
-	const node = data?.data?.apiViewer?.channels?.edges?.[0]?.node;
+	const node = data?.data?.apiViewer?.channel;
 	if (!node) {
 		return [];
 	}
@@ -266,20 +270,7 @@ export async function getWABAInfo(this: ILoadOptionsFunctions): Promise<INodePro
 		return [];
 	}
 
-	// const namespace = defaultEnv.integration.meta.namespace;
-	// const integrationId = defaultEnv.integration._id;
 	const wabaId = defaultEnv.integration.meta.wabaId;
-	// return [
-	// 	{
-	// 		name: wabaId,
-	// 		value: jsonStringify({
-	// 			namespace,
-	// 			integrationId,
-	// 			wabaId,
-	// 		}),
-	// 	},
-	// ];
-
 	return [
 		{
 			name: wabaId,
@@ -713,7 +704,7 @@ export async function searchChannels(
 	// paginationToken?: string,
 ): Promise<INodeListSearchResult> {
 	let variables = {
-		first: 10,
+		first: 15,
 		search,
 		sortBy: { _id: -1 },
 	};
@@ -729,12 +720,14 @@ export async function searchChannels(
 	});
 
 	const data = jsonParse(result) as any;
-	const results = data?.data?.apiViewer?.channels?.edges?.map((r: any) => {
-		return {
-			name: `${r?.node?.name}(${r?.node?._id})`,
-			value: r?.node?._id,
-		};
-	});
+	const results = data?.data?.apiViewer?.channels?.edges
+		?.filter((r: any) => r?.node?.connected)
+		.map((r: { node: { name: string; _id: string } }) => {
+			return {
+				name: `${r?.node?.name}(${r?.node?._id})`,
+				value: r?.node?._id,
+			};
+		});
 
 	return {
 		results,
@@ -748,6 +741,9 @@ export async function searchTemplates(
 ): Promise<INodeListSearchResult> {
 	const wabaId = this.getNodeParameter('wabaId', '') as string;
 	const first = 10;
+	if (!wabaId) {
+		return { results: [] };
+	}
 
 	let query = `wabaId=${wabaId}&first=${first}&status=["APPROVED"]`;
 	if (search?.trim().length) {

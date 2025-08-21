@@ -10,6 +10,7 @@ export const getChannelsQuery = `query getChannels($first: IntMax100, $search: S
           _id
           name
           type
+          connected
         }
       }
     }
@@ -21,21 +22,17 @@ export const getChannelsQuery = `query getChannels($first: IntMax100, $search: S
  * get channel by channelId
  * variable: channelId
  */
-export const getChannelQuery = `query getChannel($type: String, $channelId: ID) {
+export const getChannelQuery = `query getChannel($channelId: ID) {
   apiViewer {
-    channels(type: $type, channelIds: [$channelId]) {
-      edges {
-        node {
+    channel(channelId: $channelId) {
+      _id
+      name
+      environments {
+        envId
+        name
+        integration {
           _id
-          name
-          environments {
-            envId
-            name
-            integration {
-              _id
-              meta
-            }
-          }
+          meta
         }
       }
     }
