@@ -48,6 +48,9 @@ export const botAPIOperations: INodeProperties[] = [
 						baseURL: WOZTELL_BOT_BASE_URL,
 						url: '/sendResponses',
 					},
+					send: {
+						preSend: [setParamsComponents],
+					},
 				},
 			},
 		],
@@ -506,12 +509,6 @@ export const templateFields: INodeProperties[] = [
 				operation: ['sendTemplates'],
 			},
 		},
-		routing: {
-			send: {
-				type: 'body',
-				preSend: [setParamsComponents],
-			},
-		},
 	},
 	{
 		displayName: 'Variables',
@@ -542,12 +539,6 @@ export const templateFields: INodeProperties[] = [
 			show: {
 				resource: ['botAPI'],
 				operation: ['sendTemplates'],
-			},
-		},
-		routing: {
-			send: {
-				type: 'body',
-				preSend: [setParamsComponents],
 			},
 		},
 	},
@@ -582,12 +573,6 @@ export const templateFields: INodeProperties[] = [
 				operation: ['sendTemplates'],
 			},
 		},
-		routing: {
-			send: {
-				type: 'body',
-				preSend: [setParamsComponents],
-			},
-		},
 	},
 	{
 		displayName: 'Carousel',
@@ -617,12 +602,6 @@ export const templateFields: INodeProperties[] = [
 			show: {
 				resource: ['botAPI'],
 				operation: ['sendTemplates'],
-			},
-		},
-		routing: {
-			send: {
-				type: 'body',
-				preSend: [setParamsComponents],
 			},
 		},
 	},

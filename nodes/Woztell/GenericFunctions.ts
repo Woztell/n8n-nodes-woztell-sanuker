@@ -367,14 +367,18 @@ export async function getMappingButtons(
 		return { fields: [] };
 	}
 
-	const result = buttons?.buttons
-		.filter((r: any) => r.type === 'FLOW' || r.type === 'QUICK_REPLY')
-		.map((r: any) => {
-			return {
-				name: `Payload(${r.type} - ${r.text})`,
-				value: `${r.type} - ${r.text}`,
-			};
-		});
+	const result = buttons?.buttons.reduce(
+		(memo: { name: string; value: string }[], r: any, i: number) => {
+			if (r.type === 'FLOW' || r.type === 'QUICK_REPLY') {
+				memo.push({
+					name: `Payload(${r.type} - ${r.text})`,
+					value: `${r.type}-${i}`,
+				});
+			}
+			return memo;
+		},
+		[],
+	);
 
 	const type: FieldType = 'string';
 	const fields = await Promise.all(
@@ -457,22 +461,6 @@ export async function getMappingCarousel(
 // ------------------------------------------------------
 //         methods: setParams - before send request
 // ------------------------------------------------------
-
-export async function setParamsWABAInfo(
-	this: IExecuteSingleFunctions,
-	requestOptions: IHttpRequestOptions,
-): Promise<IHttpRequestOptions> {
-	const wabaInfo = this.getNodeParameter('wabaId', null, { ensureType: 'json' }) as IDataObject;
-
-	if (!requestOptions.body) {
-		requestOptions.body = {};
-	}
-
-	set(requestOptions.body as IDataObject, 'namespace', wabaInfo?.namespace);
-	set(requestOptions.body as IDataObject, 'integrationId', wabaInfo?.integrationId);
-	set(requestOptions.body as IDataObject, 'wabaId', wabaInfo?.wabaId);
-	return requestOptions;
-}
 
 export async function setParamsContent(
 	this: IExecuteSingleFunctions,
@@ -565,35 +553,28 @@ export async function setParamsComponents(
 			>;
 
 			r.buttons.forEach((v: any, i: number) => {
-				if (v.type === 'QUICK_REPLY') {
-					const payload = buttonParams.value[`${v.type} - ${v.text}`];
+				if (v.type === 'QUICK_REPLY' || v.type === 'FLOW') {
+					const payload = buttonParams.value[`${v.type}-${i}`];
 					components.push({
 						type: 'button',
 						sub_type: v.type.toLowerCase(),
 						index: i + '',
-						parameters: [
-							{
-								type: 'payload',
-								payload,
-							},
-						],
-					});
-				}
-
-				if (v.type === 'FLOW') {
-					const payload = buttonParams.value[`${v.type} - ${v.text}`].trim();
-					components.push({
-						type: 'button',
-						sub_type: v.type.toLowerCase(),
-						index: i + '',
-						parameters: [
-							{
-								type: 'action',
-								action: {
-									flow_token: payload ? `${v.flow_id}:${payload}` : v.flow_id,
-								},
-							},
-						],
+						parameters:
+							v.type === 'QUICK_REPLY'
+								? [
+										{
+											type: 'payload',
+											payload,
+										},
+									]
+								: [
+										{
+											type: 'action',
+											action: {
+												flow_token: payload ? `${v.flow_id}:${payload}` : v.flow_id,
+											},
+										},
+									],
 					});
 				}
 			});
