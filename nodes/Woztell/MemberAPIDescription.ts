@@ -18,9 +18,9 @@ export const memberAPIOperations: INodeProperties[] = [
 		placeholder: '',
 		options: [
 			{
-				name: 'Get Members',
+				name: 'Get Members By Tags',
 				value: 'getMembers',
-				action: 'Get members',
+				action: 'Get members by tags',
 				routing: {
 					request: {
 						body: {
@@ -52,9 +52,9 @@ export const memberAPIOperations: INodeProperties[] = [
 				},
 			},
 			{
-				name: 'Member Tagging',
+				name: 'Set Member Tags',
 				value: 'memberTagging',
-				action: 'Member tagging',
+				action: 'Set member tags',
 				routing: {
 					request: {
 						body: {
@@ -143,7 +143,7 @@ export const getMembersNodeFields: INodeProperties[] = [
 	//         type: getMembers
 	// ----------------------------------
 	{
-		displayName: 'Tag Filters',
+		displayName: 'Tags, Comma Separation',
 		name: 'tagFilters',
 		type: 'string',
 		required: true,
@@ -164,7 +164,7 @@ export const getMembersNodeFields: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'Get folder',
+		displayName: 'Get Folder',
 		name: 'getFolder',
 		type: 'boolean',
 		displayOptions: {
@@ -174,7 +174,6 @@ export const getMembersNodeFields: INodeProperties[] = [
 			},
 		},
 		default: false,
-		description: '',
 	},
 	{
 		displayName: 'Integration ID',
@@ -188,7 +187,6 @@ export const getMembersNodeFields: INodeProperties[] = [
 			},
 		},
 		default: '',
-		description: '',
 		typeOptions: {
 			// loadOptionsDependsOn: ['getFolder'],
 			loadOptions: {
@@ -239,7 +237,7 @@ export const getMembersNodeFields: INodeProperties[] = [
 		description: 'Whether to return all results or only up to a given limit',
 	},
 	{
-		displayName: 'Limit',
+		displayName: 'Limit, up to 100',
 		name: 'maxResults',
 		type: 'number',
 		required: true,
@@ -260,7 +258,7 @@ export const getMembersNodeFields: INodeProperties[] = [
 		description: 'Max number of results to return',
 	},
 	{
-		displayName: 'Cursor',
+		displayName: 'Cursor, Optional',
 		name: 'cursor',
 		type: 'string',
 		displayOptions: {
@@ -273,7 +271,6 @@ export const getMembersNodeFields: INodeProperties[] = [
 			},
 		},
 		default: '',
-		placeholder: 'NjNkM2UwNzRiY2JlM2Q4M2RjMW123456',
 		description: 'PageInfo.cursor',
 	},
 ];
@@ -302,12 +299,12 @@ export const taggingNodeFields: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'Tags',
+		displayName: 'Tags, Comma Separation',
 		name: 'tags',
 		type: 'string',
 		required: true,
 		description: 'Enter tags, separated by commas',
-		placeholder: 'n8n,Good',
+		placeholder: '',
 		default: '',
 		routing: {
 			send: {

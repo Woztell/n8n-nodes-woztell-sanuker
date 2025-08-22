@@ -41,12 +41,23 @@ export class WoztellTrigger implements INodeType {
 		],
 		properties: [
 			{
-				displayName: 'Path',
+				displayName: 'Webhook Path',
 				name: 'path',
 				type: 'string',
 				default: '',
-				placeholder: 'path',
 				description: 'The path for the webhook URL',
+			},
+			{
+				displayName: 'Event',
+				name: 'event',
+				type: 'options',
+				default: 'woztellEvent',
+				options: [
+					{
+						name: 'Woztell Event',
+						value: 'woztellEvent',
+					},
+				],
 			},
 			{
 				displayName: 'Filter Fields',

@@ -40,9 +40,9 @@ export const botAPIOperations: INodeProperties[] = [
 				},
 			},
 			{
-				name: 'Send Templates',
+				name: 'Send Message Template',
 				value: 'sendTemplates',
-				action: 'Send templates',
+				action: 'Send message template',
 				routing: {
 					request: {
 						baseURL: WOZTELL_BOT_BASE_URL,
@@ -102,7 +102,7 @@ export const botAPIOperations: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'RecipientId',
+		displayName: 'Reciepient ID (WhatsApp Phone Number or PSID)',
 		name: 'recipientId',
 		type: 'string',
 		default: '',
@@ -172,7 +172,7 @@ export const redirectNodeFields: INodeProperties[] = [
 	// ----------------------------------
 
 	{
-		displayName: 'Tree',
+		displayName: 'Chatbot Tree',
 		name: 'tree',
 		type: 'resourceLocator',
 		default: { mode: 'id', value: '' },
@@ -209,7 +209,7 @@ export const redirectNodeFields: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'Node CompositeId',
+		displayName: 'Chatbot Node Composite ID',
 		name: 'redirectNodeCompositeId',
 		type: 'options',
 		required: true,
@@ -382,7 +382,7 @@ export const metaNodeFields: INodeProperties[] = [
 
 export const templateFields: INodeProperties[] = [
 	{
-		displayName: 'WABA {Entity} Name or ID',
+		displayName: 'WABA Name or ID',
 		name: 'wabaId',
 		type: 'options',
 		default: '',
@@ -447,7 +447,7 @@ export const templateFields: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'Language {Entity} Name or ID',
+		displayName: 'Language Name or ID',
 		name: 'language',
 		type: 'options',
 		description:
