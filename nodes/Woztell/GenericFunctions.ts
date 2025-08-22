@@ -8,6 +8,7 @@ import {
 	IHttpRequestMethods,
 	IHttpRequestOptions,
 	ILoadOptionsFunctions,
+	IN8nHttpFullResponse,
 	INodeExecutionData,
 	INodeListSearchResult,
 	INodePropertyOptions,
@@ -26,6 +27,7 @@ export const WOZTELL_CREDENTIALS_TYPE = 'woztellCredentialApi';
 export const WOZTELL_BASE_URL = 'https://open.api.woztell.com/v3';
 export const WOZTELL_BOT_BASE_URL = 'https://bot.api.woztell.com/';
 const WOZTELL_PUBLIC_API_URL = 'https://api.whatsapp-cloud.woztell.sanuker.com/v1.2/api';
+const WOZTELL_INBOX_API_URL = 'https://api.inbox.woztell.sanuker.com/v1.0';
 
 const MEDIA_TYPES = ['IMAGE', 'DOCUMENT', 'VIDEO'];
 
@@ -56,6 +58,7 @@ async function apiRequest(
 		method,
 		body: jsonStringify(body),
 		url: url || WOZTELL_BASE_URL,
+		json: true,
 	};
 
 	if (Object.keys(option).length !== 0) {
@@ -260,8 +263,7 @@ export async function getWABAInfo(this: ILoadOptionsFunctions): Promise<INodePro
 	if (!result) {
 		return [];
 	}
-	const data = jsonParse(result) as any;
-	const node = data?.data?.apiViewer?.channel;
+	const node = result.data?.apiViewer?.channel;
 	if (!node) {
 		return [];
 	}
@@ -670,8 +672,7 @@ export async function setParamsMemberId(
 		},
 	});
 
-	const data = jsonParse(result) as any;
-	const memberId = data?.data?.apiViewer?.member?._id;
+	const memberId = result?.data?.apiViewer?.member?._id;
 
 	if (!memberId) {
 		throw new TypeError('Failed to get memberId');
@@ -710,8 +711,7 @@ export async function searchChannels(
 		variables,
 	});
 
-	const data = jsonParse(result) as any;
-	const results = data?.data?.apiViewer?.channels?.edges
+	const results = result.data?.apiViewer?.channels?.edges
 		?.filter((r: any) => r?.node?.connected)
 		.map((r: { node: { name: string; _id: string } }) => {
 			return {
@@ -749,12 +749,11 @@ export async function searchTemplates(
 		'publicApiAccessToken',
 	);
 
-	const data = jsonParse(result) as any;
-	if (!data.ok) {
+	if (!result.ok) {
 		return { results: [] };
 	}
 
-	const results = data?.data?.map((r: any) => {
+	const results = result.data?.map((r: any) => {
 		return {
 			name: `${r?.name}`,
 			value: jsonStringify(r),
@@ -782,8 +781,7 @@ export async function searchTrees(
 		variables,
 	});
 
-	const data = jsonParse(result) as any;
-	const results = data?.data?.apiViewer?.trees?.edges?.map((r: any) => {
+	const results = result?.data?.apiViewer?.trees?.edges?.map((r: any) => {
 		return {
 			name: `${r?.node?.name}(${r?.node?._id})`,
 			value: r?.node?._id,
@@ -793,6 +791,55 @@ export async function searchTrees(
 	return {
 		results,
 	};
+}
+
+export async function getMemberFolderId(
+	this: IExecuteSingleFunctions,
+	items: INodeExecutionData[],
+	_responseData: IN8nHttpFullResponse,
+): Promise<INodeExecutionData[]> {
+	const getFolder = this.getNodeParameter('getFolder') as boolean;
+	const integration = this.getNodeParameter('integration', '') as string;
+
+	if (!(getFolder && integration)) {
+		return items;
+	}
+	const integrationValue = jsonParse(integration) as {
+		_id: string;
+		appId: string;
+		signature: string;
+	};
+
+	const payload = jsonStringify({
+		appIntegration: integrationValue._id,
+		app: integrationValue.appId,
+	});
+	const buf = Buffer.from(payload, 'utf-8');
+	const signature = buf.toString('base64');
+	const signedContext = `${integrationValue.signature}.${signature}`;
+
+	for (const item of items) {
+		if (item.json.externalId && item.json.channelId) {
+			const result = await this.helpers.request(`${WOZTELL_INBOX_API_URL}/api/list-threads`, {
+				headers: {
+					'X-Woztell-Payload': payload,
+					'X-Woztell-SignedContext': signedContext,
+				},
+				useQuerystring: true,
+				qs: {
+					externalId: item.json.externalId,
+					channelId: item.json.channelId,
+				},
+				method: 'GET',
+				json: true,
+			});
+			if (result.ok) {
+				item.json.folder = result.data[0]?.folder;
+			}
+		}
+	}
+
+	return items;
 }
 
 // -----------------------------------

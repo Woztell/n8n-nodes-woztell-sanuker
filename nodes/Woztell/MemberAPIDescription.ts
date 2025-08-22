@@ -3,10 +3,11 @@ import { type INodeProperties } from 'n8n-workflow';
 import {
 	addMemberTags,
 	getConversationHistoryQuery,
+	getIntegrations,
 	getMemberInfoQuery,
 	getMembersQuery,
 } from './BaseQueries';
-import { handleOptionsPagination, setParamsMemberId } from './GenericFunctions';
+import { getMemberFolderId, handleOptionsPagination, setParamsMemberId } from './GenericFunctions';
 
 export const memberAPIOperations: INodeProperties[] = [
 	{
@@ -89,6 +90,7 @@ export const memberAPIOperations: INodeProperties[] = [
 									property: 'data.apiViewer.member',
 								},
 							},
+							getMemberFolderId,
 						],
 					},
 				},
@@ -158,6 +160,68 @@ export const getMembersNodeFields: INodeProperties[] = [
 			show: {
 				resource: ['memberAPI'],
 				operation: ['getMembers'],
+			},
+		},
+	},
+	{
+		displayName: 'Get folder',
+		name: 'getFolder',
+		type: 'boolean',
+		displayOptions: {
+			show: {
+				resource: ['memberAPI'],
+				operation: ['getMemberInfo'],
+			},
+		},
+		default: false,
+		description: '',
+	},
+	{
+		displayName: 'Integration ID',
+		name: 'integration',
+		type: 'options',
+		displayOptions: {
+			show: {
+				resource: ['memberAPI'],
+				operation: ['getMemberInfo'],
+				getFolder: [true],
+			},
+		},
+		default: '',
+		description: '',
+		typeOptions: {
+			// loadOptionsDependsOn: ['getFolder'],
+			loadOptions: {
+				routing: {
+					request: {
+						body: {
+							query: getIntegrations,
+						},
+					},
+					output: {
+						postReceive: [
+							{
+								type: 'rootProperty',
+								properties: {
+									property: 'data.apiViewer.installedIntegrations',
+								},
+							},
+							{
+								type: 'filter',
+								properties: {
+									pass: '={{$responseItem.integrationId === "inbox"}}',
+								},
+							},
+							{
+								type: 'setKeyValue',
+								properties: {
+									name: '={{$responseItem.integrationId}}',
+									value: '={{JSON.stringify($responseItem)}}',
+								},
+							},
+						],
+					},
+				},
 			},
 		},
 	},
@@ -261,7 +325,51 @@ export const taggingNodeFields: INodeProperties[] = [
 	},
 ];
 
+export const conversationHistoryNodeFields: INodeProperties[] = [
+	{
+		displayName: 'From',
+		name: 'from',
+		type: 'dateTime',
+		default: '',
+		description: 'Filter chats that were created after the set time',
+		routing: {
+			send: {
+				type: 'body',
+				property: 'variables.from',
+				value: '={{Date.parse($parameter.from)}}',
+			},
+		},
+		displayOptions: {
+			show: {
+				resource: ['memberAPI'],
+				operation: ['getConversationHistory'],
+			},
+		},
+	},
+	{
+		displayName: 'To',
+		name: 'to',
+		type: 'dateTime',
+		description: 'Filter chats that were created before the set time',
+		default: '',
+		routing: {
+			send: {
+				type: 'body',
+				property: 'variables.to',
+				value: '={{Date.parse($parameter.to)}}',
+			},
+		},
+		displayOptions: {
+			show: {
+				resource: ['memberAPI'],
+				operation: ['getConversationHistory'],
+			},
+		},
+	},
+];
+
 export const memberAPINodeFields: INodeProperties[] = [
 	...taggingNodeFields,
+	...conversationHistoryNodeFields,
 	...getMembersNodeFields,
 ];

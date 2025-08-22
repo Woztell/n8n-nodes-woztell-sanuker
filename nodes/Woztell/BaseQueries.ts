@@ -111,6 +111,7 @@ export const getMemberInfoQuery = `query getMemberInfo($channelId: ID, $external
       platform
       tags
       meta
+      externalId
       botMeta {
         subscribe
         liveChat
@@ -144,6 +145,8 @@ export const getConversationHistoryQuery = `query getConversationHistory(
   $memberId: String
   $last: IntMax100
   $before: String
+  $from: Long
+  $to: Long
 ) {
   apiViewer {
     conversationHistory(
@@ -151,6 +154,8 @@ export const getConversationHistoryQuery = `query getConversationHistory(
       memberId: $memberId
       last: $last
       before: $before
+      from: $from
+      to: $to
     ) {
       edges {
         node {
@@ -171,9 +176,6 @@ export const getConversationHistoryQuery = `query getConversationHistory(
           errors
           failedAt
           platform
-          channel {
-            name
-          }
           channelId
           tags
           meta
@@ -188,7 +190,6 @@ export const getConversationHistoryQuery = `query getConversationHistory(
     }
   }
 }
-
 `;
 
 /**
@@ -238,5 +239,20 @@ export const getNodesQuery = `query getNodes($treeIds: [ID]) {
       }
     }
   }
+}
+`;
+
+/**
+ * get Integrations
+ */
+export const getIntegrations = `query {
+    apiViewer{
+        installedIntegrations{
+            appId
+            _id
+            signature
+            integrationId
+        }
+    }
 }
 `;
