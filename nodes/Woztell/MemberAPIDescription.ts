@@ -69,9 +69,9 @@ export const memberAPIOperations: INodeProperties[] = [
 				},
 			},
 			{
-				name: 'Get Member Info',
+				name: 'Get Member Info By ID',
 				value: 'getMemberInfo',
-				action: 'Get member info',
+				action: 'Get member info by id',
 				routing: {
 					request: {
 						body: {
@@ -96,9 +96,9 @@ export const memberAPIOperations: INodeProperties[] = [
 				},
 			},
 			{
-				name: 'Get Conversation History',
+				name: 'Get Conversation History By ID',
 				value: 'getConversationHistory',
-				action: 'Get conversation history',
+				action: 'Get conversation history by id',
 				routing: {
 					request: {
 						body: {
