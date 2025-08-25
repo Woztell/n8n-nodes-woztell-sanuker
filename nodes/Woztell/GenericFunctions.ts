@@ -178,7 +178,6 @@ export async function handleOptionsPagination(
 		const endCursor = item.pageInfo.endCursor;
 		hasNextPage = item.pageInfo.hasNextPage;
 		set(requestData.options.body as IDataObject, 'variables.after', endCursor);
-		sleep(2000);
 	} while (hasNextPage);
 
 	responseData.push({ json: responseItem });
@@ -823,11 +822,6 @@ export async function getMemberFolderId(
 
 	return items;
 }
-
-const sleep = async (ms: number): Promise<void> =>
-	await new Promise((resolve) => {
-		setTimeout(resolve, ms);
-	});
 
 // -----------------------------------
 //         types
