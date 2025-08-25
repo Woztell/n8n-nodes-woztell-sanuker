@@ -88,7 +88,7 @@ export const memberAPIOperations: INodeProperties[] = [
 							{
 								type: 'rootProperty',
 								properties: {
-									property: 'data.apiViewer.member',
+									property: 'data.apiViewer',
 								},
 							},
 							getMemberFolderId,

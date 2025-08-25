@@ -800,7 +800,8 @@ export async function getMemberFolderId(
 	const signedContext = `${integrationValue.signature}.${signature}`;
 
 	for (const item of items) {
-		if (item.json.externalId && item.json.channelId) {
+		if (item.json.member) {
+			const { externalId, channelId } = item.json.member as IDataObject;
 			const result = await this.helpers.request(`${WOZTELL_INBOX_API_URL}/api/list-threads`, {
 				headers: {
 					'X-Woztell-Payload': payload,
@@ -808,14 +809,14 @@ export async function getMemberFolderId(
 				},
 				useQuerystring: true,
 				qs: {
-					externalId: item.json.externalId,
-					channelId: item.json.channelId,
+					externalId,
+					channelId,
 				},
 				method: 'GET',
 				json: true,
 			});
 			if (result.ok) {
-				item.json.folder = result.data[0]?.folder;
+				set(item.json.member as IDataObject, 'folder', result.data[0]?.folder);
 			}
 		}
 	}
