@@ -78,7 +78,8 @@ export const memberAPIOperations: INodeProperties[] = [
 							query: getMemberInfoQuery,
 							variables: {
 								channelId: '={{$parameter.channel}}',
-								externalId: '={{$parameter.externalId}}',
+								externalId:
+									'={{$parameter.externalId.replace(/[\-\(\)\+]/g, "").replaceAll(" ", "")}}',
 							},
 						},
 					},
@@ -289,6 +290,7 @@ export const taggingNodeFields: INodeProperties[] = [
 			send: {
 				type: 'body',
 				property: 'variables.input.externalId',
+				value: '={{$parameter.externalId.replace(/[\-\(\)\+]/g, "").replaceAll(" ", "")}}',
 			},
 		},
 		displayOptions: {

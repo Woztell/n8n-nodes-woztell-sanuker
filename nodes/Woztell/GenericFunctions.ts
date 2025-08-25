@@ -20,7 +20,6 @@ import {
 	ResourceMapperFields,
 } from 'n8n-workflow';
 import { getChannelQuery, getChannelsQuery, getMemberIdQuery, getTreesQuery } from './BaseQueries';
-import { setTimeout } from 'timers/promises';
 
 export const WOZTELL_CREDENTIALS_TYPE = 'woztellCredentialApi';
 
@@ -146,22 +145,7 @@ export async function getMatedata(
 	return requestOptions;
 }
 
-export const sanitizeRecipientId = (recipientId: string) => recipientId.replace(/[\-\(\)\+]/g, '');
-
-export async function cleanRecipientId(
-	this: IExecuteSingleFunctions,
-	requestOptions: IHttpRequestOptions,
-): Promise<IHttpRequestOptions> {
-	const recipientId = sanitizeRecipientId(this.getNodeParameter('recipientId') as string);
-
-	if (!requestOptions.body) {
-		requestOptions.body = {};
-	}
-
-	set(requestOptions.body as IDataObject, 'recipientId', recipientId);
-
-	return requestOptions;
-}
+export const sanitizeId = (id: string) => id.replace(/[\-\(\)\+\s]/g, '');
 
 /**
  * pagination
@@ -194,9 +178,7 @@ export async function handleOptionsPagination(
 		const endCursor = item.pageInfo.endCursor;
 		hasNextPage = item.pageInfo.hasNextPage;
 		set(requestData.options.body as IDataObject, 'variables.after', endCursor);
-
-		// timeout
-		await setTimeout(2000);
+		sleep(2000);
 	} while (hasNextPage);
 
 	responseData.push({ json: responseItem });
@@ -656,7 +638,7 @@ export async function setParamsMemberId(
 	this: IExecuteSingleFunctions,
 	requestOptions: IHttpRequestOptions,
 ): Promise<IHttpRequestOptions> {
-	const externalId = this.getNodeParameter('externalId', '') as String;
+	const externalId = sanitizeId(this.getNodeParameter('externalId', '') as string);
 	const channel = this.getNodeParameter('channel', {}) as IDataObject;
 	const channelId = channel.value;
 
@@ -841,6 +823,11 @@ export async function getMemberFolderId(
 
 	return items;
 }
+
+const sleep = async (ms: number): Promise<void> =>
+	await new Promise((resolve) => {
+		setTimeout(resolve, ms);
+	});
 
 // -----------------------------------
 //         types

@@ -114,8 +114,8 @@ export const botAPIOperations: INodeProperties[] = [
 		routing: {
 			send: {
 				type: 'body',
-				// preSend: [cleanPhoneNumber],
 				property: 'recipientId',
+				value: '={{$parameter.recipientId.replace(/[\-\(\)\+]/g, "").replaceAll(" ", "")}}',
 			},
 		},
 		displayOptions: {
