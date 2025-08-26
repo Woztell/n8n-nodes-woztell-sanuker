@@ -4,7 +4,6 @@ import {
 	getMatedata,
 	getResponses,
 	setParamsComponents,
-	setParamsContent,
 	WOZTELL_BOT_BASE_URL,
 } from './GenericFunctions';
 import { getNodesQuery } from './BaseQueries';
@@ -437,12 +436,6 @@ export const templateFields: INodeProperties[] = [
 						},
 					},
 				],
-			},
-		},
-		routing: {
-			send: {
-				type: 'body',
-				preSend: [setParamsContent],
 			},
 		},
 	},

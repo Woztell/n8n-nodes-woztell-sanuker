@@ -1,4 +1,3 @@
-import set from 'lodash/set';
 import {
 	DeclarativeRestApiSettings,
 	FieldType,
@@ -112,7 +111,7 @@ export async function getResponses(
 		throw new TypeError('Responses - Messsage type not found');
 	}
 
-	set(requestOptions.body as IDataObject, 'responses', result);
+	(requestOptions.body as IDataObject).response = result;
 	return requestOptions;
 }
 
@@ -141,7 +140,7 @@ export async function getMatedata(
 		return memo;
 	}, {});
 
-	set(requestOptions.body as IDataObject, 'meta', meta);
+	(requestOptions.body as IDataObject).meta = meta;
 	return requestOptions;
 }
 
@@ -177,7 +176,9 @@ export async function handleOptionsPagination(
 
 		const endCursor = item.pageInfo.endCursor;
 		hasNextPage = item.pageInfo.hasNextPage;
-		set(requestData.options.body as IDataObject, 'variables.after', endCursor);
+		const variables = { ...((requestData.options.body as IDataObject).variables as IDataObject) };
+		variables.after = endCursor;
+		(requestData.options.body as IDataObject).variables = variables;
 	} while (hasNextPage);
 
 	responseData.push({ json: responseItem });
@@ -455,30 +456,6 @@ export async function getMappingCarousel(
 //         methods: setParams - before send request
 // ------------------------------------------------------
 
-export async function setParamsContent(
-	this: IExecuteSingleFunctions,
-	requestOptions: IHttpRequestOptions,
-): Promise<IHttpRequestOptions> {
-	const template = this.getNodeParameter('template', {}) as Record<string, any>;
-	if (!template.value) {
-		return requestOptions;
-	}
-
-	const result = jsonParse(template.value) as TemplateCollection;
-	if (!result.name) {
-		return requestOptions;
-	}
-
-	if (!requestOptions.body) {
-		requestOptions.body = {};
-	}
-
-	set(requestOptions.body as IDataObject, 'response[0].type', 'TEMPLATE');
-	// set(requestOptions.body as IDataObject, 'languagePolicy', 'deterministic');
-	set(requestOptions.body as IDataObject, 'response[0].elementName', result.name);
-	return requestOptions;
-}
-
 export async function setParamsComponents(
 	this: IExecuteSingleFunctions,
 	requestOptions: IHttpRequestOptions,
@@ -629,7 +606,20 @@ export async function setParamsComponents(
 		}
 	});
 
-	set(requestOptions.body as IDataObject, 'response[0].components', components);
+	const template = this.getNodeParameter('template', {}) as Record<string, any>;
+	const result = jsonParse(template.value) as TemplateCollection;
+	if (!result.name) {
+		return requestOptions;
+	}
+
+	(requestOptions.body as IDataObject).response = [
+		{
+			components,
+			elementName: result.name,
+			type: 'TEMPLATE',
+			languageCode: languageTemplate.language,
+		},
+	];
 	return requestOptions;
 }
 
@@ -663,7 +653,9 @@ export async function setParamsMemberId(
 		requestOptions.body = {};
 	}
 
-	set(requestOptions.body as IDataObject, 'variables.memberId', memberId);
+	const variables = { ...((requestOptions.body as IDataObject).variables as IDataObject) };
+	variables.memberId = memberId;
+	(requestOptions.body as IDataObject).variables = variables;
 	return requestOptions;
 }
 
@@ -680,11 +672,12 @@ export async function searchChannels(
 		first: 15,
 		search,
 		sortBy: { _id: -1 },
+		type: '',
 	};
 
 	const operation = this.getNodeParameter('operation', '') as string;
 	if (operation === 'sendTemplates') {
-		set(variables, 'type', 'whatsapp-cloud');
+		variables.type = 'whatsapp-cloud';
 	}
 
 	const result = await apiRequest.call(this, 'POST', '', {
@@ -816,7 +809,7 @@ export async function getMemberFolderId(
 				json: true,
 			});
 			if (result.ok) {
-				set(item.json.member as IDataObject, 'folder', result.data[0]?.folder);
+				Object.assign(item.json.member as IDataObject, { folder: result.data[0]?.folder });
 			}
 		}
 	}
