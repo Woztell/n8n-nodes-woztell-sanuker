@@ -1,0 +1,18 @@
+{
+	"node": "n8n-nodes-base.woztell",
+	"nodeVersion": "1.0",
+	"codexVersion": "1.0",
+	"categories": ["Development", "Developer Tools"],
+	"resources": {
+		"credentialDocumentation": [
+			{
+				"url": "https://doc.woztell.com/docs/documentations/settings/access-token"
+			}
+		],
+		"primaryDocumentation": [
+			{
+				"url": "https://doc.woztell.com/docs/reference/bot-api-reference"
+			}
+		]
+	}
+}

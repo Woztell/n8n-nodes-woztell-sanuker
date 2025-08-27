@@ -1,0 +1,74 @@
+{
+	"name": "@woztell-sanuker/n8n-nodes-woztell-sanuker",
+	"version": "0.1.7",
+	"description": "n8n-nodes-woztell-sanuker",
+	"keywords": [
+		"n8n-community-node-package",
+		"woztell",
+		"sanuker",
+		"whatsapp",
+		"facebook",
+		"messenger",
+		"instagram",
+		"webchat",
+		"chatbot",
+		"business_chat",
+		"conversation",
+		"facebook_ads",
+		"gen_ai",
+		"livechat",
+		"crm",
+		"e_commerce",
+		"customer_support",
+		"marketing",
+		"notification",
+		"promotion",
+		"agentic"
+	],
+	"license": "MIT",
+	"homepage": "https://woztell.com/?partner=SANUKER",
+	"author": {
+		"name": "woztell-sanuker"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/krisatwoztell/n8n-nodes-woztell-sanuker"
+	},
+	"engines": {
+		"node": ">=20.15"
+	},
+	"main": "index.js",
+	"scripts": {
+		"build": "npx rimraf dist && tsc && gulp build:icons",
+		"dev": "tsc --watch",
+		"format": "prettier nodes credentials --write",
+		"lint": "eslint nodes credentials package.json",
+		"lintfix": "eslint nodes credentials package.json --fix",
+		"prepublishOnly": "npm run build && npm run lint -c .eslintrc.prepublish.js nodes credentials package.json"
+	},
+	"files": [
+		"dist"
+	],
+	"n8n": {
+		"n8nNodesApiVersion": 1,
+		"credentials": [
+			"dist/credentials/woztellCredentialApi.credentials.js"
+		],
+		"nodes": [
+			"dist/nodes/Woztell/WoztellTrigger.node.js",
+			"dist/nodes/Woztell/Woztell.node.js"
+		]
+	},
+	"devDependencies": {
+		"@types/node": "^24.3.0",
+		"@typescript-eslint/parser": "~8.32.0",
+		"eslint": "^8.57.0",
+		"eslint-plugin-n8n-nodes-base": "^1.16.3",
+		"gulp": "^5.0.0",
+		"prettier": "^3.5.3",
+		"typescript": "^5.8.2"
+	},
+	"peerDependencies": {
+		"n8n-workflow": "*"
+	}
+}
