@@ -11,7 +11,7 @@ import {
 
 export class WoztellTrigger implements INodeType {
 	description: INodeTypeDescription = {
-		displayName: 'Woztell Trigger',
+		displayName: 'WOZTELL Trigger',
 		name: 'woztellTrigger',
 		icon: 'file:woztell.svg',
 		group: ['trigger'],
@@ -19,7 +19,7 @@ export class WoztellTrigger implements INodeType {
 		subtitle: '={{$parameter["event"]}}',
 		description: 'Handle events via webhooks',
 		defaults: {
-			name: 'Woztell Trigger',
+			name: 'WOZTELL Trigger',
 		},
 		inputs: [],
 		outputs: [NodeConnectionType.Main],
@@ -54,7 +54,7 @@ export class WoztellTrigger implements INodeType {
 				default: 'woztellEvent',
 				options: [
 					{
-						name: 'Woztell Event',
+						name: 'WOZTELL Event',
 						value: 'woztellEvent',
 					},
 				],

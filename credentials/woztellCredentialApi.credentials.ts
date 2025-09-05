@@ -7,7 +7,7 @@ import {
 
 export class woztellCredentialApi implements ICredentialType {
 	name = 'woztellCredentialApi';
-	displayName = 'Woztell API';
+	displayName = 'WOZTELL API';
 
 	documentationUrl = 'https://doc.woztell.com/docs/documentations/settings/access-token';
 
@@ -27,14 +27,14 @@ export class woztellCredentialApi implements ICredentialType {
 			default: '',
 		},
 		{
-			displayName: 'Woztell Channel API',
+			displayName: 'WOZTELL Channel API',
 			name: 'publicApiAccessToken',
 			type: 'string',
 			typeOptions: {
 				password: true,
 			},
-			description: 'Please configure the token to use the Woztell Channel API',
-			hint: 'The token is located at Woztell -> Channels -> Channel(Edit) -> Advanced Access -> Access Tokens',
+			description: 'Please configure the token to use the WOZTELL Channel API',
+			hint: 'The token is located at WOZTELL -> Channels -> Channel(Edit) -> Advanced Access -> Access Tokens',
 			default: '',
 		},
 	];
