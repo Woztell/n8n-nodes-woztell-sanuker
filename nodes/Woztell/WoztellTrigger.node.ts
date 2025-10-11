@@ -112,7 +112,7 @@ export class WoztellTrigger implements INodeType {
 		}
 
 		// filter
-		if (channelId && channelId !== bodyData?.channelId) {
+		if (channelId && channelId !== bodyData?.channel) {
 			const res = this.getResponseObject();
 			res.status(400).json({ message: 'ChannelId is not valid' });
 			throw new NodeOperationError(this.getNode(), 'ChannelId is not valid');
