@@ -1,6 +1,6 @@
 {
 	"name": "@woztell-sanuker/n8n-nodes-woztell-sanuker",
-	"version": "0.1.8",
+	"version": "0.1.9",
 	"description": "n8n-nodes-woztell-sanuker",
 	"keywords": [
 		"n8n-community-node-package",
@@ -32,7 +32,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/krisatwoztell/n8n-nodes-woztell-sanuker"
+		"url": "https://github.com/Woztell/n8n-nodes-woztell-sanuker"
 	},
 	"engines": {
 		"node": ">=20.15"

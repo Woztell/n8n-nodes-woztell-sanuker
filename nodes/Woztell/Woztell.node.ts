@@ -18,15 +18,15 @@ import { memberAPINodeFields, memberAPIOperations } from './MemberAPIDescription
 
 export class Woztell implements INodeType {
 	description: INodeTypeDescription = {
-		displayName: 'Woztell',
+		displayName: 'WOZTELL',
 		name: 'woztell',
 		icon: 'file:woztell.svg',
 		group: ['output'],
 		version: 1,
 		subtitle: '={{ $parameter["resource"] + ": " + $parameter["operation"] }}',
-		description: 'Access Woztell API',
+		description: 'Access WOZTELL API',
 		defaults: {
-			name: 'Woztell',
+			name: 'WOZTELL',
 		},
 		usableAsTool: true,
 		inputs: [NodeConnectionType.Main],
