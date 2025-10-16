@@ -11,7 +11,6 @@ import {
 	INodeExecutionData,
 	INodeListSearchResult,
 	INodePropertyOptions,
-	IRequestOptions,
 	JsonObject,
 	jsonParse,
 	jsonStringify,
@@ -51,7 +50,7 @@ async function apiRequest(
 		};
 	}
 
-	const options: IRequestOptions = {
+	const options: IHttpRequestOptions = {
 		headers,
 		method,
 		body: jsonStringify(body),
@@ -68,7 +67,7 @@ async function apiRequest(
 	}
 
 	try {
-		return await this.helpers.request(options);
+		return await this.helpers.httpRequest(options);
 	} catch (error) {
 		throw new NodeApiError(this.getNode(), error as JsonObject);
 	}
@@ -532,19 +531,19 @@ export async function setParamsComponents(
 						parameters:
 							v.type === 'QUICK_REPLY'
 								? [
-										{
-											type: 'payload',
-											payload,
-										},
-									]
+									{
+										type: 'payload',
+										payload,
+									},
+								]
 								: [
-										{
-											type: 'action',
-											action: {
-												flow_token: payload ? `${v.flow_id}:${payload}` : v.flow_id,
-											},
+									{
+										type: 'action',
+										action: {
+											flow_token: payload ? `${v.flow_id}:${payload}` : v.flow_id,
 										},
-									],
+									},
+								],
 					});
 				}
 			});
@@ -795,12 +794,12 @@ export async function getMemberFolderId(
 	for (const item of items) {
 		if (item.json.member) {
 			const { externalId, channelId } = item.json.member as IDataObject;
-			const result = await this.helpers.request(`${WOZTELL_INBOX_API_URL}/api/list-threads`, {
+			const result = await this.helpers.httpRequest({
+				url: `${WOZTELL_INBOX_API_URL}/api/list-threads`,
 				headers: {
 					'X-Woztell-Payload': payload,
 					'X-Woztell-SignedContext': signedContext,
 				},
-				useQuerystring: true,
 				qs: {
 					externalId,
 					channelId,
