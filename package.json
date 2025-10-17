@@ -1,6 +1,6 @@
 {
 	"name": "@woztell-sanuker/n8n-nodes-woztell-sanuker",
-	"version": "0.1.10",
+	"version": "0.1.11",
 	"description": "n8n-nodes-woztell-sanuker",
 	"keywords": [
 		"n8n-community-node-package",
@@ -28,7 +28,8 @@
 	"license": "MIT",
 	"homepage": "https://woztell.com/?partner=SANUKER",
 	"author": {
-		"name": "woztell-sanuker"
+		"name": "krisatwoztell",
+		"email": "kris@woztell.com"
 	},
 	"repository": {
 		"type": "git",
