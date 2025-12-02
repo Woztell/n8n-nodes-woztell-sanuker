@@ -23,12 +23,6 @@ export class WoztellTrigger implements INodeType {
 		},
 		inputs: [],
 		outputs: [NodeConnectionType.Main],
-		// credentials: [
-		// 	{
-		// 		name: 'woztellTriggerApi',
-		// 		required: true,
-		// 	},
-		// ],
 		webhooks: [
 			{
 				name: 'default',
@@ -117,7 +111,7 @@ export class WoztellTrigger implements INodeType {
 			res.status(400).json({ message: 'ChannelId is not valid' });
 			throw new NodeOperationError(this.getNode(), 'ChannelId is not valid');
 		}
-		if (eventType && eventType !== bodyData?.eventType) {
+		if (eventType && (eventType as string).toUpperCase() !== bodyData?.eventType) {
 			const res = this.getResponseObject();
 			res.status(400).json({ message: 'EventType is not valid' });
 			throw new NodeOperationError(this.getNode(), 'EventType is not valid');

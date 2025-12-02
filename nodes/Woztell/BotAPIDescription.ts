@@ -361,13 +361,9 @@ export const metaNodeFields: INodeProperties[] = [
 			},
 		],
 		displayOptions: {
-			// the resources and operations to display this element with
 			show: {
 				resource: ['botAPI'],
-				operation: [
-					// comma-separated list of operation names
-					'redirectMemberToNode',
-				],
+				operation: ['redirectMemberToNode'],
 			},
 		},
 		routing: {
@@ -473,14 +469,13 @@ export const templateFields: INodeProperties[] = [
 	},
 	{
 		displayName: 'Headers',
-		name: 'headers', // The name used to reference the element UI within the code
-		type: 'resourceMapper', // The UI element type
+		name: 'headers',
+		type: 'resourceMapper',
 		default: {
 			mappingMode: 'defineBelow',
 			value: null,
 		},
 		required: true,
-		// See "Resource mapper type options interface" below for the full typeOptions specification
 		typeOptions: {
 			loadOptionsDependsOn: ['template.value', 'language'],
 			resourceMapper: {
@@ -505,14 +500,13 @@ export const templateFields: INodeProperties[] = [
 	},
 	{
 		displayName: 'Variables',
-		name: 'variables', // The name used to reference the element UI within the code
-		type: 'resourceMapper', // The UI element type
+		name: 'variables',
+		type: 'resourceMapper',
 		default: {
 			mappingMode: 'defineBelow',
 			value: null,
 		},
 		required: true,
-		// See "Resource mapper type options interface" below for the full typeOptions specification
 		typeOptions: {
 			loadOptionsDependsOn: ['template.value', 'language'],
 			resourceMapper: {
@@ -537,14 +531,13 @@ export const templateFields: INodeProperties[] = [
 	},
 	{
 		displayName: 'Buttons',
-		name: 'buttons', // The name used to reference the element UI within the code
-		type: 'resourceMapper', // The UI element type
+		name: 'buttons',
+		type: 'resourceMapper',
 		default: {
 			mappingMode: 'defineBelow',
 			value: null,
 		},
 		required: true,
-		// See "Resource mapper type options interface" below for the full typeOptions specification
 		typeOptions: {
 			loadOptionsDependsOn: ['template.value', 'language'],
 			resourceMapper: {
