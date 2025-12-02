@@ -150,6 +150,7 @@ export async function handleOptionsPagination(
 		edges: [],
 		pageInfo: {},
 	};
+	const returnAll = this.getNodeParameter('options.returnAll');
 
 	do {
 		const pageResponseData: INodeExecutionData[] = await this.makeRoutingRequest(requestData);
@@ -165,6 +166,9 @@ export async function handleOptionsPagination(
 		hasNextPage = item.pageInfo.hasNextPage;
 		const variables = { ...((requestData.options.body as IDataObject).variables as IDataObject) };
 		variables.after = endCursor;
+		if (returnAll) {
+			variables.first = 100;
+		}
 		(requestData.options.body as IDataObject).variables = variables;
 	} while (hasNextPage);
 
@@ -519,19 +523,19 @@ export async function setParamsComponents(
 						parameters:
 							v.type === 'QUICK_REPLY'
 								? [
-									{
-										type: 'payload',
-										payload,
-									},
-								]
-								: [
-									{
-										type: 'action',
-										action: {
-											flow_token: payload ? `${v.flow_id}:${payload}` : v.flow_id,
+										{
+											type: 'payload',
+											payload,
 										},
-									},
-								],
+									]
+								: [
+										{
+											type: 'action',
+											action: {
+												flow_token: payload ? `${v.flow_id}:${payload}` : v.flow_id,
+											},
+										},
+									],
 					});
 				}
 			});
@@ -758,10 +762,9 @@ export async function getMemberFolderId(
 	items: INodeExecutionData[],
 	_responseData: IN8nHttpFullResponse,
 ): Promise<INodeExecutionData[]> {
-	const getFolder = this.getNodeParameter('getFolder') as boolean;
-	const integration = this.getNodeParameter('integration', '') as string;
+	const integration = this.getNodeParameter('options.integration', '') as string;
 
-	if (!(getFolder && integration)) {
+	if (!integration) {
 		return items;
 	}
 	const integrationValue = jsonParse(integration) as {
