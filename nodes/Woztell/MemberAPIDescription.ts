@@ -29,12 +29,12 @@ export const memberAPIOperations: INodeProperties[] = [
 								tagFilters: [{ operator: 'IN' }],
 								first: '={{$parameter.maxResults || 100}}',
 								channelId: '={{$parameter.channel}}',
-								after: '={{$parameter.cursor || ""}}',
+								after: '={{$parameter.options.cursor || ""}}',
 							},
 						},
 					},
 					send: {
-						paginate: '={{ $parameter.returnAll }}',
+						paginate: '={{ $parameter.options.returnAll }}',
 					},
 					operations: {
 						pagination: handleOptionsPagination,
@@ -107,7 +107,7 @@ export const memberAPIOperations: INodeProperties[] = [
 							variables: {
 								channelId: '={{$parameter.channel}}',
 								last: '={{$parameter.maxResults || 100}}',
-								before: '={{$parameter.cursor || ""}}',
+								before: '={{$parameter.options.cursor || ""}}',
 							},
 						},
 					},
@@ -165,78 +165,63 @@ export const getMembersNodeFields: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'Get Folder',
-		name: 'getFolder',
-		type: 'boolean',
-		displayOptions: {
-			show: {
-				resource: ['memberAPI'],
-				operation: ['getMemberInfo'],
-			},
-		},
-		default: false,
-	},
-	{
-		displayName: 'Integration ID',
-		name: 'integration',
-		type: 'options',
-		displayOptions: {
-			show: {
-				resource: ['memberAPI'],
-				operation: ['getMemberInfo'],
-				getFolder: [true],
-			},
-		},
-		default: '',
-		typeOptions: {
-			// loadOptionsDependsOn: ['getFolder'],
-			loadOptions: {
-				routing: {
-					request: {
-						body: {
-							query: getIntegrations,
+		displayName: 'Options',
+		name: 'options',
+		type: 'collection',
+		placeholder: 'Add Option',
+		default: {},
+		options: [
+			{
+				displayName: 'Integration ID',
+				name: 'integration',
+				type: 'options',
+				description:
+					'If you want to know which folder this member is in, please select the Inbox option',
+				default: '',
+				typeOptions: {
+					loadOptions: {
+						routing: {
+							request: {
+								body: {
+									query: getIntegrations,
+								},
+							},
+							output: {
+								postReceive: [
+									{
+										type: 'rootProperty',
+										properties: {
+											property: 'data.apiViewer.installedIntegrations',
+										},
+									},
+									{
+										type: 'filter',
+										properties: {
+											pass: '={{$responseItem.integrationId === "inbox"}}',
+										},
+									},
+									{
+										type: 'setKeyValue',
+										properties: {
+											name: '={{$responseItem.integrationId}}',
+											value: '={{JSON.stringify($responseItem)}}',
+										},
+									},
+								],
+							},
 						},
-					},
-					output: {
-						postReceive: [
-							{
-								type: 'rootProperty',
-								properties: {
-									property: 'data.apiViewer.installedIntegrations',
-								},
-							},
-							{
-								type: 'filter',
-								properties: {
-									pass: '={{$responseItem.integrationId === "inbox"}}',
-								},
-							},
-							{
-								type: 'setKeyValue',
-								properties: {
-									name: '={{$responseItem.integrationId}}',
-									value: '={{JSON.stringify($responseItem)}}',
-								},
-							},
-						],
 					},
 				},
 			},
-		},
-	},
-	{
-		displayName: 'Return All',
-		name: 'returnAll',
-		type: 'boolean',
+		],
 		displayOptions: {
 			show: {
 				resource: ['memberAPI'],
-				operation: ['getMembers'],
+				operation: ['getMemberInfo'],
 			},
 		},
-		default: false,
-		description: 'Whether to return all results or only up to a given limit',
 	},
+
 	{
 		displayName: 'Limit, up to 100',
 		name: 'maxResults',
@@ -247,9 +232,6 @@ export const getMembersNodeFields: INodeProperties[] = [
 				resource: ['memberAPI'],
 				operation: ['getMembers', 'getConversationHistory'],
 			},
-			hide: {
-				returnAll: [true],
-			},
 		},
 		typeOptions: {
 			minValue: 1,
@@ -259,20 +241,33 @@ export const getMembersNodeFields: INodeProperties[] = [
 		description: 'Max number of results to return',
 	},
 	{
-		displayName: 'Cursor, Optional',
-		name: 'cursor',
-		type: 'string',
+		displayName: 'Options',
+		name: 'options',
+		type: 'collection',
+		placeholder: 'Add Option',
+		default: {},
+		options: [
+			{
+				displayName: 'Return All',
+				name: 'returnAll',
+				type: 'boolean',
+				default: false,
+				description: 'Whether to return all results or only up to a given limit',
+			},
+			{
+				displayName: 'Cursor',
+				name: 'cursor',
+				type: 'string',
+				default: '',
+				description: 'PageInfo.cursor',
+			},
+		],
 		displayOptions: {
 			show: {
 				resource: ['memberAPI'],
-				operation: ['getMembers', 'getConversationHistory'],
-			},
-			hide: {
-				returnAll: [true],
+				operation: ['getMembers'],
 			},
 		},
-		default: '',
-		description: 'PageInfo.cursor',
 	},
 ];
 
@@ -326,38 +321,48 @@ export const taggingNodeFields: INodeProperties[] = [
 
 export const conversationHistoryNodeFields: INodeProperties[] = [
 	{
-		displayName: 'From',
-		name: 'from',
-		type: 'dateTime',
-		default: '',
-		description: 'Filter chats that were created after the set time',
-		routing: {
-			send: {
-				type: 'body',
-				property: 'variables.from',
-				value: '={{Date.parse($parameter.from)}}',
+		displayName: 'Options',
+		name: 'options',
+		type: 'collection',
+		placeholder: 'Add Option',
+		default: {},
+		options: [
+			{
+				displayName: 'From',
+				name: 'from',
+				type: 'dateTime',
+				default: '',
+				description: 'Filter chats that were created after the set time',
+				routing: {
+					send: {
+						type: 'body',
+						property: 'variables.from',
+						value: '={{Date.parse($parameter.options.from)}}',
+					},
+				},
 			},
-		},
-		displayOptions: {
-			show: {
-				resource: ['memberAPI'],
-				operation: ['getConversationHistory'],
+			{
+				displayName: 'To',
+				name: 'to',
+				type: 'dateTime',
+				description: 'Filter chats that were created before the set time',
+				default: '',
+				routing: {
+					send: {
+						type: 'body',
+						property: 'variables.to',
+						value: '={{Date.parse($parameter.options.to)}}',
+					},
+				},
 			},
-		},
-	},
-	{
-		displayName: 'To',
-		name: 'to',
-		type: 'dateTime',
-		description: 'Filter chats that were created before the set time',
-		default: '',
-		routing: {
-			send: {
-				type: 'body',
-				property: 'variables.to',
-				value: '={{Date.parse($parameter.to)}}',
+			{
+				displayName: 'Cursor',
+				name: 'cursor',
+				type: 'string',
+				default: '',
+				description: 'PageInfo.cursor',
 			},
-		},
+		],
 		displayOptions: {
 			show: {
 				resource: ['memberAPI'],
@@ -369,6 +374,6 @@ export const conversationHistoryNodeFields: INodeProperties[] = [
 
 export const memberAPINodeFields: INodeProperties[] = [
 	...taggingNodeFields,
-	...conversationHistoryNodeFields,
 	...getMembersNodeFields,
+	...conversationHistoryNodeFields,
 ];

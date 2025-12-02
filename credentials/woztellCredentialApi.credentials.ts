@@ -1,7 +1,8 @@
 import {
-	IAuthenticateGeneric,
+	ICredentialDataDecryptedObject,
 	ICredentialTestRequest,
 	ICredentialType,
+	IHttpRequestOptions,
 	INodeProperties,
 } from 'n8n-workflow';
 
@@ -39,20 +40,26 @@ export class woztellCredentialApi implements ICredentialType {
 		},
 	];
 
-	// This credential is currently not used by any node directly
-	// but the HTTP Request node can use it to make requests.
-	// The credential is also testable due to the `test` property below
-	authenticate: IAuthenticateGeneric = {
-		type: 'generic',
-		properties: {
-			headers: {
-				Authorization: '=Bearer {{$credentials.accessToken}}',
-			},
-			// qs: {
-			// 	accessToken: '={{$credentials.accessToken}}',
-			// },
-		},
-	};
+	async authenticate(credentials: ICredentialDataDecryptedObject, options: IHttpRequestOptions) {
+		options.headers = options.headers || { 'Content-Type': 'application/json' };
+		if ((options.baseURL || options.url)?.includes('api.whatsapp-cloud.woztell')) {
+			const secret = {
+				accessToken: credentials.publicApiAccessToken as string,
+			};
+			options.qs = options.qs || {};
+			if (typeof options.qs === 'object') {
+				Object.assign(options.qs, secret);
+			}
+		} else {
+			const secret = {
+				Authorization: ('Bearer ' + credentials.accessToken) as string,
+			};
+			if (typeof options.headers === 'object') {
+				Object.assign(options.headers, secret);
+			}
+		}
+		return options;
+	}
 
 	// The block below tells how this credential can be tested
 	test: ICredentialTestRequest = {
