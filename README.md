@@ -2,15 +2,36 @@
 
 Welcome to our WOZTELL n8n nodes, for easier [WOZTELL](https://woztell.com/) integration within your n8n workflows, please read:
 
-*  [Sign up WOZTELL and WhatsApp Business API for Free](#Sign-up-WOZTELL-and-WhatsApp-Business-API-for-Free)
+*  [Product Features](#product-features)
+*  [In case you don't have the n8n](#in-case-you-dont-have-the-n8n)
+*  [Sign up WOZTELL and WhatsApp Business API for Free](#sign-up-woztell-and-whatsapp-business-api-for-free)
 *  [Installation](#installation)
 *  [Credentials](#credentials)
-*  [Build automation with WOZTELL](#Build-automation-with-WOZTELL)
+*  [Build automation with WOZTELL](#build-automation-with-woztell)
 *  [Triggers and Nodes](#triggers-and-nodes)
 *  [Contact](#contact)
 *  [About Us](#about-us)
 *  [Resources](#resources)
 
+
+## Product Features
+
+* **Webhook**: Receive all WhatsApp, Facebook Messenger, Instagram, WebChat, and website messages in WOZTELL inbox in real time.
+
+* **Send Messages**: Send messages or approved message templates to target customers via WhatsApp Business API.
+
+* **Chatbot Forwarding**: Route customer conversations to WOZTELL chatbot for autoreply.
+
+* **Full WhatsApp Message Type Support**: Support all business message types and conversation categories available on WhatsApp and Facebook Messenger.
+
+* **Member Search**: Batch query WOZTELL user information using Member Tags.
+
+* **OpenAPI Information Query**: Directly query and update user profiles, conversation histories, and related data on WOZTELL platform via OpenAPI.
+
+
+## In case you don't have the n8n
+
+Connect WOZTELL on n8n | Unlock AI-powered WhatsApp automation in just a few clicks. Easily build no-code workflows on WhatsApp, Messenger, Instagram, and WebChat by connecting WOZTELL with thousands of n8n integrations. Automate personalized broadcasts, conversations, and inbox management, fully powered by WOZTELL’s OpenAPI and GenAI engine.
 
 
 ## Sign up WOZTELL and WhatsApp Business API for Free
@@ -28,8 +49,6 @@ You can now create a WOZTELL account and open up a WhatsApp Business API account
 3.  Once you signed up, you will be directed to the platform homepage. There, you can register a WhatsApp Business API account for free following [https://doc.woztell.com/docs/procedures/basic-whatsapp-chatbot-setup/standard-procedures-wa-connect-waba/](https://doc.woztell.com/docs/procedures/basic-whatsapp-chatbot-setup/standard-procedures-wa-connect-waba/) or  use the buttons on the top right of the homepage to chat with our sales team or book a demo session.
 
     ![register4](https://store.sanuker.cn/nn/images/register4.png)
-
-
 
 ## Installation
 
