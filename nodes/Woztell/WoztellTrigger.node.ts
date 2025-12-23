@@ -17,7 +17,7 @@ export class WoztellTrigger implements INodeType {
 		group: ['trigger'],
 		version: 1,
 		subtitle: '={{$parameter["event"]}}',
-		description: 'Handle events via webhooks',
+		description: 'Handle WOZTELL events via webhooks',
 		defaults: {
 			name: 'WOZTELL Trigger',
 		},
