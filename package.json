@@ -1,6 +1,6 @@
 {
 	"name": "@woztell-sanuker/n8n-nodes-woztell-sanuker",
-	"version": "0.1.12",
+	"version": "0.1.13",
 	"description": "n8n-nodes-woztell-sanuker",
 	"keywords": [
 		"n8n-community-node-package",
