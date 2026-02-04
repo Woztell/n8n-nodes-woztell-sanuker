@@ -10,7 +10,8 @@ export class woztellCredentialApi implements ICredentialType {
 	name = 'woztellCredentialApi';
 	displayName = 'WOZTELL API';
 
-	documentationUrl = 'https://doc.woztell.com/docs/documentations/settings/access-token';
+	documentationUrl =
+		'https://support.woztell.com/portal/en/kb/articles/access-token#Access_Token_Generation';
 
 	properties: INodeProperties[] = [
 		// The credentials to get from user and save encrypted.
