@@ -1,6 +1,6 @@
 {
 	"name": "@woztell-sanuker/n8n-nodes-woztell-sanuker",
-	"version": "0.1.13",
+	"version": "0.1.14",
 	"description": "n8n-nodes-woztell-sanuker",
 	"keywords": [
 		"n8n-community-node-package",
@@ -56,8 +56,8 @@
 			"dist/credentials/woztellCredentialApi.credentials.js"
 		],
 		"nodes": [
-			"dist/nodes/Woztell/WoztellTrigger.node.js",
-			"dist/nodes/Woztell/Woztell.node.js"
+			"dist/nodes/Woztell/Woztell.node.js",
+			"dist/nodes/Woztell/WoztellTrigger.node.js"
 		]
 	},
 	"devDependencies": {

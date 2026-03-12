@@ -17,7 +17,8 @@ export class WoztellTrigger implements INodeType {
 		group: ['trigger'],
 		version: 1,
 		subtitle: '={{$parameter["event"]}}',
-		description: 'Handle WOZTELL events via webhooks',
+		description:
+			'Automate messaging workflows across WhatsApp, Messenger, and Instagram with WOZTELL',
 		defaults: {
 			name: 'WOZTELL Trigger',
 		},
