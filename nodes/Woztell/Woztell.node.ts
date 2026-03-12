@@ -24,7 +24,8 @@ export class Woztell implements INodeType {
 		group: ['output'],
 		version: 1,
 		subtitle: '={{ $parameter["resource"] + ": " + $parameter["operation"] }}',
-		description: 'Access WOZTELL API',
+		description:
+			'Automate messaging workflows across WhatsApp, Messenger, and Instagram with WOZTELL',
 		defaults: {
 			name: 'WOZTELL',
 		},
